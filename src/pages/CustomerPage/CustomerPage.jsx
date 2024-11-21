@@ -24,7 +24,7 @@ export const CustomerPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         localStorage.setItem('CustomerDetails', JSON.stringify(formData));
-        navigate('/customerOTPPage');
+        navigate('/customerPhoto');
         console.log('Form Data:', formData);
     };
 

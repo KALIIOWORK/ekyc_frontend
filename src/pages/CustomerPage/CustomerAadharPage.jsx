@@ -95,7 +95,7 @@ export const CustomerAadharPage = () => {
         console.log("Submitted Document Data:", {
             aadharNumber,
             aadharFrontImage,
-            aadharBackImage,
+            aadharBackImage
         });
         localStorage.setItem('CustomerAadharDetails', JSON.stringify(documentData));
 

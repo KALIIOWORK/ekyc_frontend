@@ -22,6 +22,7 @@ import UnauthorizedPage from './pages/UnauthorizedPage/UnauthorizedPage'; // Ens
 import ProctectedRoute from './pages/ProtectedRoute/ProtectedRoute';
 import './index.css';
 import { AuthorisedRoute } from './pages/AuthorisedRoute/AuthorisedRoute';
+import { CustomerPhoto } from './pages/CustomerPage/CustomerPhoto';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -38,6 +39,7 @@ function App() {
             <Route path='/customerOTPPage' element={<CustomerOTPPage />} />
             <Route path='/customerDocsPage' element={<CustomerDocsPage />} />
             <Route path='/customerAadharPage' element={<CustomerAadharPage />} />
+            <Route path='/customerPhoto' element={<CustomerPhoto />} />
             <Route path='/startVideoCallPage' element={<StartVideoCallPage />} />
             <Route path='/consentPage' element={<ConsentPage />} />
             <Route path='/videoCallPage/:customerId' element={<VideoCallPage />} />

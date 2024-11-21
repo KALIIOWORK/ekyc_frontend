@@ -5,6 +5,7 @@ import Header from './Header';
 export const ConsentPage = () => {
     const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate();
+    const eKYCId = localStorage.getItem('eKYCId');
 
     // Handle checkbox change
     const handleCheckboxChange = (event) => {
@@ -14,7 +15,7 @@ export const ConsentPage = () => {
     // Handle consent submission
     const handleSubmit = () => {
         // Proceed to the next page (replace with your actual route)
-        navigate('/waitingRoom'); // Example: navigate to the next page
+        navigate(`/videoCallPage/${eKYCId}`);
     };
 
     return (

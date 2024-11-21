@@ -1,21 +1,64 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from './Header';
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 export const CustomerPhoto = () => {
-
-    const [photo, setPhoto] = useState('');
+    const [photo, setPhoto] = useState(null); // Stores the captured photo
+    const [isCameraOpen, setIsCameraOpen] = useState(false); // Tracks camera state
+    const videoRef = useRef(null); // Reference for the video element
+    const cameraStreamRef = useRef(null); // Reference for the camera stream
     const navigate = useNavigate();
 
-    const handlePhotoClick = () => {
-        // Code to click a photo
-        // Code to store the photo in local storage
+    useEffect(() => {
+        if (isCameraOpen && videoRef.current && cameraStreamRef.current) {
+            videoRef.current.srcObject = cameraStreamRef.current;
+            videoRef.current.play().catch((err) => {
+                console.error("Error playing the video stream:", err);
+            });
+        }
+    }, [isCameraOpen]);
+
+    // Starts the camera and shows the feed
+    const handlePhotoClick = async () => {
+        if (isCameraOpen) return; // Prevent reopening if already open
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            cameraStreamRef.current = stream;
+            setIsCameraOpen(true);
+        } catch (error) {
+            console.error("Error accessing camera:", error);
+            alert("Unable to access the camera. Please check permissions.");
+        }
+    };
+
+    // Captures the photo and stores it in localStorage
+    const capturePhoto = () => {
+        if (videoRef.current && cameraStreamRef.current) {
+            const canvas = document.createElement("canvas");
+            canvas.width = videoRef.current.videoWidth;
+            canvas.height = videoRef.current.videoHeight;
+            const context = canvas.getContext("2d");
+            context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+            const dataURL = canvas.toDataURL("image/png");
+            setPhoto(dataURL);
+            localStorage.setItem("customerPhoto", dataURL);
+
+            // Stop the camera feed
+            cameraStreamRef.current.getTracks().forEach((track) => track.stop());
+            cameraStreamRef.current = null;
+            setIsCameraOpen(false);
+        } else {
+            alert("Camera feed is not initialized. Please click 'Click Photo' first.");
+        }
     };
 
     const handleProceed = () => {
-        // Proceed to the next page (replace with your actual route)
-        //set to local storage
-        navigate(`/customerOTPPage`);
+        if (photo) {
+            navigate(`/customerOTPPage`);
+        } else {
+            alert("Please capture a photo before proceeding.");
+        }
     };
 
     return (
@@ -26,23 +69,46 @@ export const CustomerPhoto = () => {
                     <span className="text-md text-white block text-center mb-6">
                         Click a photo to proceed
                     </span>
-                    <div className="photo-container">
-                        <img
-                            src={photo}
-                            alt="photo"
-                            className="photo"
-                        />
+                    <div className="relative w-48 h-48 rounded-full border-4 border-gray-300 overflow-hidden">
+                        {isCameraOpen ? (
+                            <video
+                                ref={videoRef}
+                                className="w-full h-full object-cover"
+                                autoPlay
+                                playsInline
+                            ></video>
+                        ) : photo ? (
+                            <img
+                                src={photo}
+                                alt="Customer Photo"
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500">
+                                No Photo
+                            </div>
+                        )}
                     </div>
-                    <div className='flex flex-row '>
-                        <button
-                            onClick={handlePhotoClick}
-                            className="bg-text-color text-black py-2 px-4 mr-10  mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
-                        >
-                            Click Photo
-                        </button>
+                    <div className="flex flex-row mt-6">
+                        {!isCameraOpen && (
+                            <button
+                                onClick={handlePhotoClick}
+                                className="bg-text-color text-black py-2 px-4 mr-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            >
+                                Click Photo
+                            </button>
+                        )}
+                        {isCameraOpen && (
+                            <button
+                                onClick={capturePhoto}
+                                className="bg-text-color text-black py-2 px-4 mr-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            >
+                                Capture Photo
+                            </button>
+                        )}
                         <button
                             onClick={handleProceed}
-                            className="bg-text-color text-black py-2 px-4  mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            className="bg-text-color text-black py-2 px-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
                         >
                             Proceed
                         </button>

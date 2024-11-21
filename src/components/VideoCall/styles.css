@@ -1,0 +1,120 @@
+/* styles.css */
+
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.room {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 2px;
+    border-radius: 8px;
+}
+
+.join-room {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.join-room input {
+    margin: 10px 0;
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.join-room button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.join-room button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.user-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    width: 300px;
+    height: 200px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-name {
+    font-weight: bold;
+}
+
+.control {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.left-control {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-phone {
+    background-color: #28a745;
+}
+
+.btn-phone-active {
+    background-color: #dc3545;
+}
+
+.i-microphone,
+.i-camera,
+.i-phone-hangup,
+.i-mdi-phone {
+    font-size: 20px;
+}
+
+.i-microphone.off,
+.i-camera.off {
+    color: #dc3545;
+}
+/* .user video {
+    width: 100%;
+    height: auto;
+    display: block;
+} */

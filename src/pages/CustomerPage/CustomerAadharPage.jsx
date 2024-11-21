@@ -2,56 +2,54 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import AadharCardImage from "../../assets/aadhar.png";
-import Swal from "sweetalert2";
-import { useCreateCustomer } from '../../utils/api-services/Customer';
+import { useCreateCustomer } from "../../utils/api-services/Customer";
 
 export const CustomerAadharPage = () => {
     const navigate = useNavigate();
     const [aadharNumber, setAadharNumber] = useState("");
     const [uploadType, setUploadType] = useState("");
-    const [aadharImage, setImage] = useState(null);
-    const videoRef = useRef(null); // Reference to video element
-    const [isCameraOpen, setIsCameraOpen] = useState(false); // Track if camera is opened
-    const [cameraStream, setCameraStream] = useState(null); // To store camera stream
-
-
+    const [aadharFrontImage, setAadharFrontImage] = useState("");
+    const [aadharBackImage, setAadharBackImage] = useState("");
+    const videoRef = useRef(null);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
+    const [cameraStream, setCameraStream] = useState(null);
+    const [captureMode, setCaptureMode] = useState("front"); // Track which side to capture
 
     const { mutate } = useCreateCustomer({
         onSuccess: (res) => {
-            console.log("customer created successfully")
-            localStorage.setItem("role", "Customer")
-            localStorage.setItem("eKYCId", res.data.eKYCId)
+            console.log("Customer created successfully");
+            localStorage.setItem("role", "Customer");
+            localStorage.setItem("eKYCId", res.data.eKYCId);
             navigate("/startVideoCallPage");
-        }
-    })
+        },
+    });
 
-    // Handle file input change for device upload
-    const handleFileChange = (event) => {
+    // Handle file input change
+    const handleFileChange = (event, type) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImage(reader.result);
+                if (type === "front") setAadharFrontImage(reader.result);
+                else setAadharBackImage(reader.result);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    // Capture aadharImage from the video feed
+    // Capture image from the video feed
     const handleCapture = () => {
         if (videoRef.current && cameraStream) {
-            // Create canvas and draw the video frame
             const canvas = document.createElement("canvas");
             canvas.width = videoRef.current.videoWidth;
             canvas.height = videoRef.current.videoHeight;
             const context = canvas.getContext("2d");
             context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL("image/png");
 
-            // Convert canvas to aadharImage and set it
-            const dataURL = canvas.toDataURL("aadharImage/png");
-            setImage(dataURL);
+            if (captureMode === "front") setAadharFrontImage(dataURL);
+            else setAadharBackImage(dataURL);
 
-            // Stop the camera stream after capturing
             cameraStream.getTracks().forEach((track) => track.stop());
             setIsCameraOpen(false);
         } else {
@@ -59,20 +57,16 @@ export const CustomerAadharPage = () => {
         }
     };
 
-    // Start the camera feed when 'Capture from Camera' is selected
+    // Start the camera feed
     const startCamera = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            setCameraStream(stream); // Save the stream to stop later
+            setCameraStream(stream);
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
                 videoRef.current.play();
-                // Debugging: Check if stream is successfully attached
-                videoRef.current.onloadedmetadata = () => {
-                    console.log("Camera feed started successfully");
-                };
             }
-            setIsCameraOpen(true); // Camera opened
+            setIsCameraOpen(true);
         } catch (error) {
             console.error("Error accessing camera:", error);
             alert("Error accessing the camera. Please check your permissions.");
@@ -82,9 +76,8 @@ export const CustomerAadharPage = () => {
     const handleUploadTypeChange = (e) => {
         setUploadType(e.target.value);
         if (e.target.value === "capture") {
-            startCamera(); // Start camera when 'Capture from Camera' is selected
+            startCamera();
         } else {
-            // Stop the camera if not capturing
             if (cameraStream) {
                 cameraStream.getTracks().forEach((track) => track.stop());
             }
@@ -92,16 +85,17 @@ export const CustomerAadharPage = () => {
         }
     };
 
-    // Form submission handler
     const handleSubmit = (e) => {
         e.preventDefault();
         const documentData = {
             aadharNumber,
-            aadharImage,
+            aadharFrontImage,
+            aadharBackImage,
         };
         console.log("Submitted Document Data:", {
             aadharNumber,
-            aadharImage,
+            aadharFrontImage,
+            aadharBackImage,
         });
         localStorage.setItem('CustomerAadharDetails', JSON.stringify(documentData));
 
@@ -137,7 +131,8 @@ export const CustomerAadharPage = () => {
         };
 
         appendBase64ImageToFormData(customerPancardDetails.pancardImage, 'pancardImage', 'pancard.jpg');
-        appendBase64ImageToFormData(customerAadharDetails.aadharImage, 'aadharImage', 'aadhar.jpg');
+        appendBase64ImageToFormData(customerAadharDetails.aadharFrontImage, 'aadharFrontImage', 'aadhar_front.jpg');
+        appendBase64ImageToFormData(customerAadharDetails.aadharBackImage, 'aadharBackImage', 'aadhar_back.jpg');
 
         // Call the mutate function with the FormData
         mutate(formData);
@@ -150,7 +145,6 @@ export const CustomerAadharPage = () => {
     };
 
     useEffect(() => {
-        // Cleanup camera on component unmount
         return () => {
             if (cameraStream) {
                 cameraStream.getTracks().forEach((track) => track.stop());
@@ -164,97 +158,122 @@ export const CustomerAadharPage = () => {
 
             <div className="flex flex-col items-center justify-center px-10 pt-6">
                 <div className="w-full max-w-md md:max-w-xl space-y-2">
-                    <div className="flex flex-col items-center justify-center px-10 pb-2">
-                        <h2 className="text-xl font-semibold mb-3 text-center text-white">
-                            You have selected Aadhar Card as Officially Valid Document
-                        </h2>
-                        <div className="w-1/2 flex items-center justify-start bg-gray-300 rounded-full p-2 mb-2">
-                            <img
-                                src={AadharCardImage}
-                                alt="Aadhar Card"
-                                className="w-8 h-8 object-cover rounded-md mr-4 md:mr-8"
-                            />
-                            <span className="text-md text-gray-500 ml-4">
-                                Aadhar Card
-                            </span>
-                        </div>
+                    <h2 className="text-xl font-semibold mb-3 text-center text-white">
+                        Upload Aadhaar Card Details
+                    </h2>
+                    <div className="flex items-center justify-center bg-gray-300 rounded-full p-2 mb-2">
+                        <img
+                            src={AadharCardImage}
+                            alt="Aadhaar Card"
+                            className="w-8 h-8 object-cover rounded-md mr-4"
+                        />
+                        <span className="text-md text-gray-500">Aadhaar Card</span>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-3">
-                        {/* Aadhar Number Input */}
                         <input
                             type="number"
                             value={aadharNumber}
                             onChange={(e) => setAadharNumber(e.target.value)}
-                            placeholder="Enter Aadhar card No"
+                            placeholder="Enter Aadhaar Number"
                             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                             required
                         />
 
-                        {/* Upload Options */}
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             <label className="block text-white">Upload Front Image</label>
                             <select
                                 onChange={handleUploadTypeChange}
                                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                 required
                             >
-                                <option value="">Upload Options</option>
+                                <option value="">Select Upload Option</option>
                                 <option value="upload">Upload from Device</option>
                                 <option value="capture">Capture from Camera</option>
                             </select>
 
                             {uploadType === "upload" && (
-                                <input
-                                    type="file"
-                                    accept="aadharImage/*"
-                                    onChange={handleFileChange}
-                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                />
+                                <>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleFileChange(e, "front")}
+                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                    />
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleFileChange(e, "back")}
+                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                    />
+                                </>
                             )}
 
                             {uploadType === "capture" && isCameraOpen && (
-                                <div className="flex flex-col items-center justify-center">
-                                    {/* Video Element for Live Feed */}
-                                    <div className="relative w-80 h-60 bg-gray-200">
-                                        <video
-                                            ref={videoRef}
-                                            width="100%"
-                                            height="100%"
-                                            className="object-cover rounded-md"
-                                            autoPlay
-                                        ></video>
+                                <div className="flex flex-col items-center">
+                                    <video
+                                        ref={videoRef}
+                                        width="100%"
+                                        height="100%"
+                                        className="object-cover rounded-md"
+                                        autoPlay
+                                    ></video>
+                                    <div className="space-x-4 mt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setCaptureMode("front");
+                                                handleCapture();
+                                            }}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                        >
+                                            Capture Front
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setCaptureMode("back");
+                                                handleCapture();
+                                            }}
+                                            className="bg-green-500 text-white px-4 py-2 rounded-md"
+                                        >
+                                            Capture Back
+                                        </button>
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={handleCapture}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-3"
-                                    >
-                                        Capture Image
-                                    </button>
                                 </div>
                             )}
                         </div>
 
-                        {/* Image Preview or Placeholder */}
-                        <div className="mt-4 flex items-center justify-center border-2 border-dashed border-gray-300 p-4 rounded-md">
-                            {!aadharImage && !isCameraOpen ? (
-                                <span className="text-white">No aadharImage selected</span>
-                            ) : aadharImage ? (
-                                <img
-                                    src={aadharImage}
-                                    alt="Captured"
-                                    className="w-full h-40 object-cover rounded-md"
-                                />
-                            ) : (
-                                <span className="text-gray-500">Capturing...</span>
-                            )}
+                        <div className="mt-4 space-y-4">
+                            <div>
+                                <h4 className="text-white">Front Image Preview</h4>
+                                {aadharFrontImage ? (
+                                    <img
+                                        src={aadharFrontImage}
+                                        alt="Front"
+                                        className="w-full h-40 object-cover rounded-md"
+                                    />
+                                ) : (
+                                    <span className="text-gray-500">No front image selected</span>
+                                )}
+                            </div>
+                            <div>
+                                <h4 className="text-white">Back Image Preview</h4>
+                                {aadharBackImage ? (
+                                    <img
+                                        src={aadharBackImage}
+                                        alt="Back"
+                                        className="w-full h-40 object-cover rounded-md"
+                                    />
+                                ) : (
+                                    <span className="text-gray-500">No back image selected</span>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Submit Button */}
                         <button
                             type="submit"
-                            className="bg-text-color text-white text-lg  py-2 w-full rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            className="bg-text-color text-white text-lg py-2 w-full rounded-full transition duration-200 hover:bg-hover-color"
                         >
                             Submit
                         </button>
@@ -264,3 +283,7 @@ export const CustomerAadharPage = () => {
         </div>
     );
 };
+
+
+
+

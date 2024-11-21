@@ -125,7 +125,7 @@ export const CustomerDocsPage = () => {
                     <form onSubmit={handleSubmit} className="space-y-3">
                         {/* PAN Number Input */}
                         <input
-                            type="number"
+                            type="text"
                             value={pancardNumber}
                             onChange={(e) => setPanNumber(e.target.value)}
                             placeholder="Enter PAN card No"

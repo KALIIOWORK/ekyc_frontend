@@ -20,7 +20,7 @@ export const Basics = ({ eKYCId }) => {
     const isConnected = useIsConnected();
     const [appId, setAppId] = useState("88ab819f90fb40bcb76fbabc0023fa5d");
     const [channel, setChannel] = useState("ekyc");
-    const [token, setToken] = useState("007eJxTYHgouO+e+7rpPmsdDI28Sp3iBX0iZGfpH4+5svPa37wlQcwKDBYWiUkWhpZplgZpSSYGSclJ5mZpSYlJyQYGRsZpiaYpzxfbpjcEMjJM7N/GysgAgSA+C0NqdmUyAwMAJ24ftA==");
+    const [token, setToken] = useState("007eJxTYNi1syI4bGrTTMnvWhNzli5/p3DQ75T8844wtd7Ut3efaq5VYLCwSEyyMLRMszRISzIxSEpOMjdLS0pMSjYwMDJOSzRNORVsn94QyMhg/HIJCyMDBIL4LAyp2ZXJDAwA52Ahxg==");
     const selectedOption = localStorage.getItem('role');
     const [apiCalled, setApiCalled] = useState(false);
     const [sid, setSid] = useState("");

@@ -8,11 +8,11 @@ export const CustomerDocsPage = () => {
     const [pancardNumber, setPanNumber] = useState("");
     const [uploadType, setUploadType] = useState("");
     const [pancardImage, setImage] = useState(null);
-    const videoRef = useRef(null); // Reference to video element
-    const [isCameraOpen, setIsCameraOpen] = useState(false); // Track if camera is opened
-    const [cameraStream, setCameraStream] = useState(null); // To store camera stream
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
+    const [cameraStream, setCameraStream] = useState(null);
 
-    // Handle file input change for device upload
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -24,81 +24,76 @@ export const CustomerDocsPage = () => {
         }
     };
 
-    // Capture pancardImage from the video feed
-    const handleCapture = () => {
-        if (videoRef.current && cameraStream) {
-            // Create canvas and draw the video frame
-            const canvas = document.createElement("canvas");
-            canvas.width = videoRef.current.videoWidth;
-            canvas.height = videoRef.current.videoHeight;
-            const context = canvas.getContext("2d");
-            context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
-            // Convert canvas to pancardImage and set it
-            const dataURL = canvas.toDataURL("pancardImage/png");
-            setImage(dataURL);
-
-            // Stop the camera stream after capturing
-            cameraStream.getTracks().forEach((track) => track.stop());
-            setIsCameraOpen(false);
-        } else {
-            alert("Camera is not available or feed is not initialized.");
-        }
-    };
-
-    // Start the camera feed when 'Capture from Camera' is selected
     const startCamera = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            setCameraStream(stream); // Save the stream to stop later
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                videoRef.current.play();
-                // Debugging: Check if stream is successfully attached
-                videoRef.current.onloadedmetadata = () => {
-                    console.log("Camera feed started successfully");
-                };
-            }
-            setIsCameraOpen(true); // Camera opened
+            setCameraStream(stream);
+            setIsCameraOpen(true); // Ensure camera is flagged as active
         } catch (error) {
-            console.error("Error accessing camera:", error);
-            alert("Error accessing the camera. Please check your permissions.");
+            console.error("Error accessing the camera:", error);
+            alert("Unable to access the camera. Please check permissions and ensure your device has a working camera.");
+        }
+    };
+
+    const stopCamera = () => {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach((track) => track.stop());
+        }
+        setCameraStream(null);
+        setIsCameraOpen(false);
+    };
+
+    const handleCapture = () => {
+        if (videoRef.current && canvasRef.current) {
+            const canvas = canvasRef.current;
+            const context = canvas.getContext("2d");
+            canvas.width = videoRef.current.videoWidth;
+            canvas.height = videoRef.current.videoHeight;
+            context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL("image/png");
+            setImage(dataURL);
+            stopCamera();
         }
     };
 
     const handleUploadTypeChange = (e) => {
-        setUploadType(e.target.value);
-        if (e.target.value === "capture") {
-            startCamera(); // Start camera when 'Capture from Camera' is selected
+        const selectedOption = e.target.value;
+        setUploadType(selectedOption);
+
+        if (selectedOption === "capture") {
+            startCamera();
         } else {
-            // Stop the camera if not capturing
-            if (cameraStream) {
-                cameraStream.getTracks().forEach((track) => track.stop());
-            }
-            setIsCameraOpen(false);
+            stopCamera();
         }
     };
 
-    // Form submission handler
     const handleSubmit = (e) => {
         e.preventDefault();
         const documentData = {
             pancardNumber,
             pancardImage,
         };
-        localStorage.setItem('CustomerPancardDetails', JSON.stringify(documentData));
+        localStorage.setItem("CustomerPancardDetails", JSON.stringify(documentData));
         console.log("Submitted Document Data:", documentData);
         navigate("/customerAadharPage");
     };
 
+    // Effect to assign the stream to video element
     useEffect(() => {
-        // Cleanup camera on component unmount
-        return () => {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach((track) => track.stop());
-            }
-        };
+        if (cameraStream && videoRef.current) {
+            videoRef.current.srcObject = cameraStream;
+            videoRef.current.play().catch((error) => {
+                console.error("Error starting video playback:", error);
+            });
+        }
     }, [cameraStream]);
+
+    useEffect(() => {
+        // Cleanup camera when the component unmounts or upload type changes
+        return () => {
+            stopCamera();
+        };
+    }, []);
 
     return (
         <div className="flex flex-col min-h-screen bg-primary-color">
@@ -116,14 +111,11 @@ export const CustomerDocsPage = () => {
                                 alt="PAN Card"
                                 className="w-8 h-8 object-cover rounded-md mr-4 md:mr-8"
                             />
-                            <span className="text-md text-white ml-4">
-                                PAN Card
-                            </span>
+                            <span className="text-md text-white ml-4">PAN Card</span>
                         </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-3">
-                        {/* PAN Number Input */}
                         <input
                             type="text"
                             value={pancardNumber}
@@ -133,7 +125,6 @@ export const CustomerDocsPage = () => {
                             required
                         />
 
-                        {/* Upload Options */}
                         <div className="space-y-2">
                             <label className="block text-white">Upload Front Image</label>
                             <select
@@ -149,7 +140,7 @@ export const CustomerDocsPage = () => {
                             {uploadType === "upload" && (
                                 <input
                                     type="file"
-                                    accept="pancardImage/*"
+                                    accept="image/*"
                                     onChange={handleFileChange}
                                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                 />
@@ -157,16 +148,13 @@ export const CustomerDocsPage = () => {
 
                             {uploadType === "capture" && isCameraOpen && (
                                 <div className="flex flex-col items-center justify-center">
-                                    {/* Video Element for Live Feed */}
-                                    <div className="relative w-80 h-60 bg-gray-200">
-                                        <video
-                                            ref={videoRef}
-                                            width="100%"
-                                            height="100%"
-                                            className="object-cover rounded-md"
-                                            autoPlay
-                                        ></video>
-                                    </div>
+                                    <video
+                                        ref={videoRef}
+                                        className="w-80 h-60 bg-black rounded-md"
+                                        autoPlay
+                                        playsInline
+                                    ></video>
+                                    <canvas ref={canvasRef} className="hidden"></canvas>
                                     <button
                                         type="button"
                                         onClick={handleCapture}
@@ -178,25 +166,21 @@ export const CustomerDocsPage = () => {
                             )}
                         </div>
 
-                        {/* Image Preview or Placeholder */}
                         <div className="mt-4 flex items-center justify-center border-2 border-dashed border-gray-300 p-4 rounded-md">
-                            {!pancardImage && !isCameraOpen ? (
-                                <span className="text-white">No pancardImage selected</span>
-                            ) : pancardImage ? (
+                            {pancardImage ? (
                                 <img
                                     src={pancardImage}
-                                    alt="Captured"
+                                    alt="Captured or Uploaded"
                                     className="w-full h-40 object-cover rounded-md"
                                 />
                             ) : (
-                                <span className="text-white">Capturing...</span>
+                                <span className="text-white">No image selected</span>
                             )}
                         </div>
 
-                        {/* Submit Button */}
                         <button
                             type="submit"
-                            className="bg-text-color text-white text-lg  py-2 w-full rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            className="bg-text-color text-white text-lg py-2 w-full rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
                         >
                             Submit
                         </button>

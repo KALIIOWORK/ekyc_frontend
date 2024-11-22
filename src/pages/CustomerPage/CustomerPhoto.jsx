@@ -112,7 +112,7 @@ export const CustomerPhoto = () => {
                         >
                             Capture Photo
                         </button>
-                        <label className="bg-text-color text-black py-2 px-4 mr-2 mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5 cursor-pointer">
+                        {/* <label className="bg-text-color text-black py-2 px-4 mr-2 mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5 cursor-pointer">
                             Upload Photo
                             <input
                                 type="file"
@@ -120,7 +120,7 @@ export const CustomerPhoto = () => {
                                 className="hidden"
                                 onChange={handleFileUpload}
                             />
-                        </label>
+                        </label> */}
                         <button
                             onClick={handleProceed}
                             className="bg-text-color text-black py-2 px-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"

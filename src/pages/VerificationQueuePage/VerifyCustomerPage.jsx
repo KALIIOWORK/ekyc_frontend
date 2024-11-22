@@ -18,15 +18,12 @@ export const VerifyCustomerPage = () => {
         }
     });
 
-
-
     const { isLoadingCustomer, isError, data } = useGeteKYCById(id, {
         onSuccess: (res) => {
             if (res.data.status) {
                 setCustomerDetails(res.data.eKYC);
                 setNoCustomersMessage('');
-            }
-            else {
+            } else {
                 setCustomerDetails({});
                 setNoCustomersMessage(res.data.message);
             }
@@ -34,6 +31,12 @@ export const VerifyCustomerPage = () => {
     });
 
     const specificFields = ["title", "fullName", "DOB", "mobileNumber", "email", "aadharNumber", "pancardNumber"];
+    const imageFields = [
+        { label: 'Aadhar Front Image', key: 'aadharFrontImage' },
+        { label: 'Aadhar Back Image', key: 'aadharBackImage' },
+        { label: 'Pancard Image', key: 'pancardImage' },
+        { label: 'Customer Photo', key: 'customerPhoto' }
+    ];
 
     return (
         <div className="flex flex-col min-h-screen bg-primary-color text-white">
@@ -58,25 +61,40 @@ export const VerifyCustomerPage = () => {
                 </div>
             </div>
 
+            {/* Images Section */}
+            <div className="p-8 space-y-4">
+                <h3 className="text-xl font-bold text-center mb-2">Customer Documents</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {imageFields.map(({ label, key }) => (
+                        <div key={key} className="flex flex-col items-center bg-white p-2 rounded-md shadow-md text-black">
+                            <span className="font-semibold mb-2">{label}</span>
+                            {customerDetails[key] ? (
+                                <img
+                                    src={customerDetails[key]}
+                                    alt={label}
+                                    className="w-40 h-40 object-cover border rounded-md"
+                                />
+                            ) : (
+                                <p className="text-red-500">No {label} available</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             {/* Video Section */}
             <div className="p-8">
                 <h3 className="text-xl font-bold text-center mb-2">Video KYC</h3>
                 <div className="flex justify-center items-center">
                     {customerDetails.ekycRecording ? (
-                        <video controls width="200" height="200">
+                        <video controls width="300" height="300" className="border rounded-lg">
                             <source src={customerDetails.ekycRecording} type="video/mp4" />
                         </video>
-                        // <video
-                        //     src={customerDetails.ekycRecording}
-                        //     controls
-                        //     className="w-full max-w-md border-2 border-white rounded-lg shadow-lg"
-                        // ></video>
                     ) : (
                         <p className="text-center text-red-500">No eKYC recording available</p>
                     )}
                 </div>
             </div>
-
         </div>
     );
 };

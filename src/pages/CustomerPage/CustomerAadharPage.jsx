@@ -7,13 +7,15 @@ import { useCreateCustomer } from "../../utils/api-services/Customer";
 export const CustomerAadharPage = () => {
     const navigate = useNavigate();
     const [aadharNumber, setAadharNumber] = useState("");
-    const [uploadType, setUploadType] = useState("");
+    const [uploadTypeFront, setUploadTypeFront] = useState(""); // Front image upload type
+    const [uploadTypeBack, setUploadTypeBack] = useState(""); // Back image upload type
     const [aadharFrontImage, setAadharFrontImage] = useState("");
     const [aadharBackImage, setAadharBackImage] = useState("");
-    const videoRef = useRef(null);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
     const [cameraStream, setCameraStream] = useState(null);
     const [captureMode, setCaptureMode] = useState("front"); // Track which side to capture
+    const videoRefFront = useRef(null); // Video ref for front
+    const videoRefBack = useRef(null); // Video ref for back
 
     const { mutate } = useCreateCustomer({
         onSuccess: (res) => {
@@ -27,7 +29,7 @@ export const CustomerAadharPage = () => {
         },
     });
 
-    // Handle file input change
+    // Handle file input change for front and back
     const handleFileChange = (event, type) => {
         const file = event.target.files[0];
         if (file) {
@@ -41,7 +43,8 @@ export const CustomerAadharPage = () => {
     };
 
     // Capture image from the video feed
-    const handleCapture = () => {
+    const handleCapture = (side) => {
+        const videoRef = side === "front" ? videoRefFront : videoRefBack;
         if (videoRef.current && cameraStream) {
             const canvas = document.createElement("canvas");
             canvas.width = videoRef.current.videoWidth;
@@ -50,7 +53,7 @@ export const CustomerAadharPage = () => {
             context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
             const dataURL = canvas.toDataURL("image/png");
 
-            if (captureMode === "front") setAadharFrontImage(dataURL);
+            if (side === "front") setAadharFrontImage(dataURL);
             else setAadharBackImage(dataURL);
 
             cameraStream.getTracks().forEach((track) => track.stop());
@@ -60,26 +63,43 @@ export const CustomerAadharPage = () => {
         }
     };
 
-    // Start the camera feed
-    const startCamera = async () => {
+    useEffect(() => {
+        if (isCameraOpen && cameraStream) {
+            const videoRef = captureMode === "front" ? videoRefFront : videoRefBack;
+            if (videoRef.current) {
+                videoRef.current.srcObject = cameraStream;
+                videoRef.current.play().catch((err) =>
+                    console.error("Error playing video stream:", err)
+                );
+            }
+        }
+    }, [cameraStream, captureMode, isCameraOpen]);
+    
+    
+    // Start the camera feed for front and back
+    const startCamera = async (side) => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             setCameraStream(stream);
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                videoRef.current.play();
-            }
+            setCaptureMode(side); // Track capture mode (front or back)
             setIsCameraOpen(true);
         } catch (error) {
             console.error("Error accessing camera:", error);
             alert("Error accessing the camera. Please check your permissions.");
         }
     };
+    
 
-    const handleUploadTypeChange = (e) => {
-        setUploadType(e.target.value);
-        if (e.target.value === "capture") {
-            startCamera();
+    const handleUploadTypeChange = (e, side) => {
+        const value = e.target.value;
+        if (side === "front") {
+            setUploadTypeFront(value);
+        } else {
+            setUploadTypeBack(value);
+        }
+
+        if (value === "capture") {
+            startCamera(side);
         } else {
             if (cameraStream) {
                 cameraStream.getTracks().forEach((track) => track.stop());
@@ -150,12 +170,24 @@ export const CustomerAadharPage = () => {
     };
 
     useEffect(() => {
+        // Cleanup when the component unmounts or when switching cameras
         return () => {
             if (cameraStream) {
                 cameraStream.getTracks().forEach((track) => track.stop());
             }
         };
     }, [cameraStream]);
+
+    // useEffect to initialize video streams once the video ref is available
+    useEffect(() => {
+        if (videoRefFront.current && videoRefBack.current) {
+            if (cameraStream) {
+                const videoRef = captureMode === "front" ? videoRefFront : videoRefBack;
+                videoRef.current.srcObject = cameraStream;
+                videoRef.current.play();
+            }
+        }
+    }, [videoRefFront.current, videoRefBack.current, cameraStream, captureMode]);
 
     return (
         <div className="flex flex-col min-h-screen bg-primary-color">
@@ -186,9 +218,10 @@ export const CustomerAadharPage = () => {
                         />
 
                         <div className="space-y-4">
+                            {/* Front Image Upload */}
                             <label className="block text-white">Upload Front Image</label>
                             <select
-                                onChange={handleUploadTypeChange}
+                                onChange={(e) => handleUploadTypeChange(e, "front")}
                                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                 required
                             >
@@ -197,88 +230,96 @@ export const CustomerAadharPage = () => {
                                 <option value="capture">Capture from Camera</option>
                             </select>
 
-                            {uploadType === "upload" && (
-                                <>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => handleFileChange(e, "front")}
-                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                    />
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => handleFileChange(e, "back")}
-                                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                                    />
-                                </>
+                            {uploadTypeFront === "upload" && (
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleFileChange(e, "front")}
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                />
                             )}
 
-                            {uploadType === "capture" && isCameraOpen && (
+                            {uploadTypeFront === "capture" && isCameraOpen && captureMode === "front" && (
                                 <div className="flex flex-col items-center">
                                     <video
-                                        ref={videoRef}
+                                        ref={videoRefFront}
                                         width="100%"
                                         height="100%"
                                         className="object-cover rounded-md"
-                                        autoPlay
                                     ></video>
-                                    <div className="space-x-4 mt-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setCaptureMode("front");
-                                                handleCapture();
-                                            }}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                                        >
-                                            Capture Front
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setCaptureMode("back");
-                                                handleCapture();
-                                            }}
-                                            className="bg-green-500 text-white px-4 py-2 rounded-md"
-                                        >
-                                            Capture Back
-                                        </button>
-                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCapture("front")}
+                                        className="mt-2 bg-blue-500 text-white px-6 py-2 rounded-md"
+                                    >
+                                        Capture Front Image
+                                    </button>
+                                </div>
+                            )}
+
+                            {aadharFrontImage && (
+                                <div className="mt-3">
+                                    <img
+                                        src={aadharFrontImage}
+                                        alt="Aadhar Front"
+                                        className="w-32 h-32 object-cover rounded-md"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Back Image Upload */}
+                            <label className="block text-white">Upload Back Image</label>
+                            <select
+                                onChange={(e) => handleUploadTypeChange(e, "back")}
+                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                required
+                            >
+                                <option value="">Select Upload Option</option>
+                                <option value="upload">Upload from Device</option>
+                                <option value="capture">Capture from Camera</option>
+                            </select>
+
+                            {uploadTypeBack === "upload" && (
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleFileChange(e, "back")}
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                />
+                            )}
+
+                            {uploadTypeBack === "capture" && isCameraOpen && captureMode === "back" && (
+                                <div className="flex flex-col items-center">
+                                    <video
+                                        ref={videoRefBack}
+                                        width="100%"
+                                        height="100%"
+                                        className="object-cover rounded-md"
+                                    ></video>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCapture("back")}
+                                        className="mt-2 bg-blue-500 text-white px-6 py-2 rounded-md"
+                                    >
+                                        Capture Back Image
+                                    </button>
+                                </div>
+                            )}
+
+                            {aadharBackImage && (
+                                <div className="mt-3">
+                                    <img
+                                        src={aadharBackImage}
+                                        alt="Aadhar Back"
+                                        className="w-32 h-32 object-cover rounded-md"
+                                    />
                                 </div>
                             )}
                         </div>
 
-                        <div className="mt-4 space-y-4">
-                            <div>
-                                <h4 className="text-white">Front Image Preview</h4>
-                                {aadharFrontImage ? (
-                                    <img
-                                        src={aadharFrontImage}
-                                        alt="Front"
-                                        className="w-full h-40 object-cover rounded-md"
-                                    />
-                                ) : (
-                                    <span className="text-gray-500">No front image selected</span>
-                                )}
-                            </div>
-                            <div>
-                                <h4 className="text-white">Back Image Preview</h4>
-                                {aadharBackImage ? (
-                                    <img
-                                        src={aadharBackImage}
-                                        alt="Back"
-                                        className="w-full h-40 object-cover rounded-md"
-                                    />
-                                ) : (
-                                    <span className="text-gray-500">No back image selected</span>
-                                )}
-                            </div>
-                        </div>
-
                         <button
                             type="submit"
-                            className="bg-text-color text-white text-lg py-2 w-full rounded-full transition duration-200 hover:bg-hover-color"
+                            className="w-full py-2 bg-blue-500 text-white rounded-md"
                         >
                             Submit
                         </button>
@@ -288,7 +329,3 @@ export const CustomerAadharPage = () => {
         </div>
     );
 };
-
-
-
-

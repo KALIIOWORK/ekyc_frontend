@@ -1,56 +1,64 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from './Header';
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 export const CustomerPhoto = () => {
-    const [photo, setPhoto] = useState('');
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
+    const [photo, setPhoto] = useState(null); // Stores the captured photo
+    const [isCameraOpen, setIsCameraOpen] = useState(false); // Tracks camera state
+    const videoRef = useRef(null); // Reference for the video element
+    const cameraStreamRef = useRef(null); // Reference for the camera stream
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (isCameraOpen && videoRef.current && cameraStreamRef.current) {
+            videoRef.current.srcObject = cameraStreamRef.current;
+            videoRef.current.play().catch((err) => {
+                console.error("Error playing the video stream:", err);
+            });
+        }
+    }, [isCameraOpen]);
+
+    // Starts the camera and shows the feed
     const handlePhotoClick = async () => {
+        if (isCameraOpen) return; // Prevent reopening if already open
         try {
-            // Access the user's camera
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const video = videoRef.current;
-            video.srcObject = stream;
-            video.play();
-        } catch (err) {
-            console.error('Error accessing the camera: ', err);
-            alert('Unable to access the camera. Please ensure permissions are granted.');
+            cameraStreamRef.current = stream;
+            setIsCameraOpen(true);
+        } catch (error) {
+            console.error("Error accessing camera:", error);
+            alert("Unable to access the camera. Please check permissions.");
         }
     };
 
+    // Captures the photo and stores it in localStorage
     const capturePhoto = () => {
-        const canvas = canvasRef.current;
-        const video = videoRef.current;
+        if (videoRef.current && cameraStreamRef.current) {
+            const canvas = document.createElement("canvas");
+            canvas.width = videoRef.current.videoWidth;
+            canvas.height = videoRef.current.videoHeight;
+            const context = canvas.getContext("2d");
+            context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-        if (canvas && video) {
-            const context = canvas.getContext('2d');
-            // Draw the current frame from the video to the canvas
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/png'); // Convert to base64 image
-            setPhoto(imageData);
-            localStorage.setItem('customerPhoto', imageData); // Save photo to local storage
-        }
-    };
+            const dataURL = canvas.toDataURL("image/png");
+            setPhoto(dataURL);
+            localStorage.setItem("customerPhoto", dataURL);
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const imageData = reader.result;
-                setPhoto(imageData);
-                localStorage.setItem('customerPhoto', imageData); // Save uploaded photo to local storage
-            };
-            reader.readAsDataURL(file);
+            // Stop the camera feed
+            cameraStreamRef.current.getTracks().forEach((track) => track.stop());
+            cameraStreamRef.current = null;
+            setIsCameraOpen(false);
+        } else {
+            alert("Camera feed is not initialized. Please click 'Click Photo' first.");
         }
     };
 
     const handleProceed = () => {
-        // Navigate to the next page
-        navigate(`/customerOTPPage`);
+        if (photo) {
+            navigate(`/customerOTPPage`);
+        } else {
+            alert("Please capture a photo before proceeding.");
+        }
     };
 
     return (
@@ -61,21 +69,43 @@ export const CustomerPhoto = () => {
                     <span className="text-md text-white block text-center mb-6">
                         Click a photo or upload one to proceed
                     </span>
-                    <div className="photo-container relative">
-                        {photo ? (
-                            <img src={photo} alt="Captured" className="photo w-full h-auto mb-4" />
+                    <div className="relative w-48 h-48 rounded-full border-4 border-gray-300 overflow-hidden">
+                        {isCameraOpen ? (
+                            <video
+                                ref={videoRef}
+                                className="w-full h-full object-cover"
+                                autoPlay
+                                playsInline
+                            ></video>
+                        ) : photo ? (
+                            <img
+                                src={photo}
+                                alt="Customer Photo"
+                                className="w-full h-full object-cover"
+                            />
                         ) : (
-                            <video ref={videoRef} className="video w-full h-auto mb-4" />
+                            <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500">
+                                No Photo
+                            </div>
                         )}
-                        <canvas ref={canvasRef} className="hidden" width="640" height="480"></canvas>
                     </div>
-                    <div className="flex flex-row flex-wrap justify-center">
-                        <button
-                            onClick={handlePhotoClick}
-                            className="bg-text-color text-black py-2 px-4 mr-2 mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
-                        >
-                            Open Camera
-                        </button>
+                    <div className="flex flex-row mt-6">
+                        {!isCameraOpen && (
+                            <button
+                                onClick={handlePhotoClick}
+                                className="bg-text-color text-black py-2 px-4 mr-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            >
+                                Click Photo
+                            </button>
+                        )}
+                        {isCameraOpen && (
+                            <button
+                                onClick={capturePhoto}
+                                className="bg-text-color text-black py-2 px-4 mr-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            >
+                                Capture Photo
+                            </button>
+                        )}
                         <button
                             onClick={capturePhoto}
                             className="bg-text-color text-black py-2 px-4 mr-2 mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
@@ -93,7 +123,7 @@ export const CustomerPhoto = () => {
                         </label>
                         <button
                             onClick={handleProceed}
-                            className="bg-text-color text-black py-2 px-4 mt-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                            className="bg-text-color text-black py-2 px-4 rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
                         >
                             Proceed
                         </button>

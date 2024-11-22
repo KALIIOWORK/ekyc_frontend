@@ -143,6 +143,7 @@ export const CustomerAadharPage = () => {
         localStorage.removeItem('CustomerDetails')
         localStorage.removeItem('CustomerPancardDetails')
         localStorage.removeItem('CustomerAadharDetails')
+        localStorage.removeItem('customerPhoto')
 
         // Navigate to the next page
         //navigate("/startVideoCallPage");

@@ -20,6 +20,9 @@ export const CustomerAadharPage = () => {
             console.log("Customer created successfully");
             localStorage.setItem("role", "Customer");
             localStorage.setItem("eKYCId", res.data.eKYCId);
+            localStorage.setItem("channelName", res.data.channelName);
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("uid", res.data.uid);
             navigate("/startVideoCallPage");
         },
     });
@@ -103,6 +106,7 @@ export const CustomerAadharPage = () => {
         const customerDetails = JSON.parse(localStorage.getItem('CustomerDetails'));
         const customerPancardDetails = JSON.parse(localStorage.getItem('CustomerPancardDetails'));
         const customerAadharDetails = JSON.parse(localStorage.getItem('CustomerAadharDetails'));
+        const customerPhoto = localStorage.getItem('customerPhoto');
 
         // Combine all data
         const customerData = {
@@ -133,7 +137,7 @@ export const CustomerAadharPage = () => {
         appendBase64ImageToFormData(customerPancardDetails.pancardImage, 'pancardImage', 'pancard.jpg');
         appendBase64ImageToFormData(customerAadharDetails.aadharFrontImage, 'aadharFrontImage', 'aadhar_front.jpg');
         appendBase64ImageToFormData(customerAadharDetails.aadharBackImage, 'aadharBackImage', 'aadhar_back.jpg');
-
+        appendBase64ImageToFormData(customerPhoto, 'customerPhoto', 'customerPhoto.jpg');
         // Call the mutate function with the FormData
         mutate(formData);
         localStorage.removeItem('CustomerDetails')

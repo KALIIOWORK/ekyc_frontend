@@ -14,11 +14,13 @@ import axios from 'axios';
 import { BASE_URL } from "../../utils/url";
 import { useRef } from "react";
 
-export const Basics = ({ eKYCId }) => {
+export const AgentBasics = ({ eKYCId }) => {
     const channel = localStorage.getItem('channelName');
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('agenttoken');
     const appId = "88ab819f90fb40bcb76fbabc0023fa5d"
-    const uid = localStorage.getItem('uid');
+    const uid = localStorage.getItem('agentuid');
+    const startRecordinguid = localStorage.getItem('startRecordinguid');
+    const startRecordingtoken = localStorage.getItem('startRecordingtoken');
     // console.log("Channel Name:", channel)
     const navigate = useNavigate();
     const [calling, setCalling] = useState(true);
@@ -31,6 +33,7 @@ export const Basics = ({ eKYCId }) => {
     const [sid, setSid] = useState("");
     const [resourceId, setResourceId] = useState("");
     const [CustomerUID, setCustomerUID] = useState("");
+    //const [startuid, setStartuid] = useState("");
 
     useJoin({ appid: appId, channel: channel, token: token ? token : null, uid: uid }, calling);
 
@@ -48,34 +51,35 @@ export const Basics = ({ eKYCId }) => {
     const remoteUsers = useRemoteUsers();
 
 
-    // useEffect(() => {
-    //     console.log("Debugging useEffect:");
-    //     console.log("Selected Option:", selectedOption);
-    //     console.log("Remote Users:", remoteUsers);
-    //     console.log("API already called:", apiCalled);
+    useEffect(() => {
+        console.log("Debugging useEffect:");
+        console.log("Selected Option:", selectedOption);
+        console.log("Remote Users:", remoteUsers);
+        console.log("API already called:", apiCalled);
 
-    //     if (selectedOption === "Agent" && remoteUsers.length > 0 && !apiCalled) {
-    //         console.log("Making API call to start recording...");
-    //         setApiCalled(true); // Prevent duplicate calls
-    //         setCustomerUID(remoteUsers[0].uid);
-    //         axios
-    //             .post(`${BASE_URL}/user/startRecording`, {
-    //                 cname: channel,
-    //                 uid: remoteUsers[0].uid,
-    //                 token: token,
-    //                 ekycId: eKYCId,
-    //             })
-    //             .then((response) => {
-    //                 setSid(response.data.sid);
-    //                 setResourceId(response.data.resourceId);
-    //                 console.log("Recording started successfully:", response.data);
-    //             })
-    //             .catch((error) => {
-    //                 console.error("Error starting recording:", error);
-    //                 setApiCalled(false); // Allow retries if the call fails
-    //             });
-    //     }
-    // }, [remoteUsers, selectedOption, channel, token, eKYCId]);
+        if (selectedOption === "Agent" && remoteUsers.length > 0 && !apiCalled) {
+            console.log("Making API call to start recording...");
+            setApiCalled(true); // Prevent duplicate calls
+            setCustomerUID(remoteUsers[0].uid);
+            axios
+                .post(`${BASE_URL}/user/startRecording`, {
+                    cname: channel,
+                    token: token,
+                    ekycId: eKYCId,
+                    startRecordinguid: startRecordinguid,
+                    startRecordingtoken: startRecordingtoken
+                })
+                .then((response) => {
+                    setSid(response.data.sid);
+                    setResourceId(response.data.resourceId);
+                    console.log("Recording started successfully:", response.data);
+                })
+                .catch((error) => {
+                    console.error("Error starting recording:", error);
+                    setApiCalled(false); // Allow retries if the call fails
+                });
+        }
+    }, [remoteUsers, selectedOption, channel, token, eKYCId]);
 
 
 
@@ -116,8 +120,9 @@ export const Basics = ({ eKYCId }) => {
                 resourceId: resourceId,
                 cname: channel,
                 sid: sid,
-                uid: CustomerUID,
                 ekycId: eKYCId,
+                startRecordinguid: startRecordinguid,
+                startRecordingtoken: startRecordingtoken
             })
             .then((response) => {
                 console.log("Recording stopped successfully:", response.data);
@@ -183,16 +188,16 @@ export const Basics = ({ eKYCId }) => {
                             <span>Agent is Offline</span>
                         </div>
                     )}
-                    {/* <button
+                    <button
                         onClick={handleEndCall}
                         className="text-gray-700 bg-gray-200 rounded-lg shadow-md font-semibold py-2 px-4 lg:px-6 hover:bg-red-600 hover:text-white transition duration-200"
                     >
                         End Call
-                    </button> */}
+                    </button>
                 </div>
             </div>
         </>
     );
 };
 
-export default Basics;
+export default AgentBasics;

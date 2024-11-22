@@ -7,7 +7,9 @@ const CustomerCard = ({ customer }) => {
   const navigate = useNavigate();
 
   const handleJoinCallClick = () => {
-
+    localStorage.setItem('channelName', customer.channelName)
+    localStorage.setItem('token', customer.token)
+    localStorage.setItem('uid', customer.uid)
     // Navigate to the customer queue page and pass the customer ID as a query parameter
     navigate(`/VideoCallPage/${customer._id}`);
 

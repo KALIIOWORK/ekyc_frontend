@@ -110,28 +110,7 @@ export const Basics = ({ eKYCId }) => {
 
     // Handle End Call button click
     const handleEndCall = () => {
-        console.log("End Call button clicked");
-        axios
-            .post(`${BASE_URL}/user/stopRecording`, {
-                resourceId: resourceId,
-                cname: channel,
-                sid: sid,
-                uid: CustomerUID,
-                ekycId: eKYCId,
-            })
-            .then((response) => {
-                console.log("Recording stopped successfully:", response.data);
-            })
-            .catch((error) => {
-                console.error("Error stopping recording:", error);
-            });
-
-        if (selectedOption === 'Agent') {
-            navigate('/customerQueuePage');
-        } else {
-            navigate('/');
-        }
-        // Logic to end the call can go here
+        navigate('/videoCallSuccessPage');
     };
 
     return (
@@ -183,12 +162,12 @@ export const Basics = ({ eKYCId }) => {
                                 <span>Agent is Offline</span>
                             </div>
                         )}
-                        {/* <button
-                        onClick={handleEndCall}
-                        className="text-gray-700 bg-gray-200 rounded-lg shadow-md font-semibold py-2 px-4 lg:px-6 hover:bg-red-600 hover:text-white transition duration-200"
-                    >
-                        End Call
-                    </button> */}
+                        <button
+                            onClick={handleEndCall}
+                            className="text-gray-700 bg-gray-200 rounded-lg shadow-md font-semibold py-2 px-4 lg:px-6 hover:bg-red-600 hover:text-white transition duration-200"
+                        >
+                            End Call
+                        </button>
                     </div>
                 </div>
             )}

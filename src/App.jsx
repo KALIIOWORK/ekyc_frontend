@@ -26,6 +26,7 @@ import { CustomerPhoto } from './pages/CustomerPage/CustomerPhoto';
 import { AgentVideoCallPage } from './pages/VideoCallPage/AgentVideoCallPage';
 import { AgentProfilePage } from './pages/CustomerQueuePage/AgentProfilePage';
 import { VerifierProfilePage } from './pages/VerificationQueuePage/VerifierProfilePage';
+import { VideoCallSuccessPage } from './pages/CustomerPage/VideoCallSuccessPage';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -46,6 +47,7 @@ function App() {
             <Route path='/startVideoCallPage' element={<StartVideoCallPage />} />
             <Route path='/consentPage' element={<ConsentPage />} />
             <Route path='/videoCallPage/:customerId' element={<VideoCallPage />} />
+            <Route path='/videoCallSuccessPage' element={<VideoCallSuccessPage />} />
             <Route path='/Basic' element={<Basics />} />
             <Route path='/agentLogin' element={<AgentLoginPage />} />
             <Route path='/verifierLogin' element={<VerifierLoginPage />} />

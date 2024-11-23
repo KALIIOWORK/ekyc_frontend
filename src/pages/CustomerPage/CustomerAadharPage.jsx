@@ -152,7 +152,7 @@ export const CustomerAadharPage = () => {
       ...customerPancardDetails,
       ...customerAadharDetails,
     };
-    console.log(customerData);
+    //console.log(customerData);
 
     // Create FormData object
     const formData = new FormData();

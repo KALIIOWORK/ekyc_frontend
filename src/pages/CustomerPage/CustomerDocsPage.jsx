@@ -89,7 +89,7 @@ export const CustomerDocsPage = () => {
       "CustomerPancardDetails",
       JSON.stringify(documentData)
     );
-    console.log("Submitted Document Data:", documentData);
+    //console.log("Submitted Document Data:", documentData);
     navigate("/customerAadharPage");
   };
 

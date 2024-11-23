@@ -36,7 +36,7 @@ export const CustomerPage = () => {
 
         localStorage.setItem('CustomerDetails', JSON.stringify(formData));
         navigate('/customerPhoto');
-        console.log('Form Data:', formData);
+        //console.log('Form Data:', formData);
     };
 
 

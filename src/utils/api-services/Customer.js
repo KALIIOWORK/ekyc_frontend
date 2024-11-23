@@ -10,7 +10,7 @@ export const useCreateCustomer = (
         queryKey: ["createNewCustomer"],
         mutationFn: (formData) => axios.post(`/customer/createNewCustomer`, formData),
         onError: (err) => {
-            console.error(err);
+            //console.error(err);
             Swal.fire({
                 icon: "error",
                 title: "Oops...",

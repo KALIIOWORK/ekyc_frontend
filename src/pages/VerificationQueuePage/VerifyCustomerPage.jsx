@@ -62,7 +62,7 @@ export const VerifyCustomerPage = () => {
             verificationStatus: status,
             verificationComments: verificationComments
         };
-        console.log("Submitting:", updatedBody);
+        //console.log("Submitting:", updatedBody);
         setBody(updatedBody); // Update body state
         mutate(updatedBody); // Pass updated body to mutate
     };

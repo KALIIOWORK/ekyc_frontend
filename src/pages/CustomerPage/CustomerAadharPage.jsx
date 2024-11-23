@@ -189,7 +189,7 @@ export const CustomerAadharPage = () => {
     localStorage.removeItem("customerPhoto");
 
     // Navigate to the next page
-    navigate("/startVideoCallPage");
+    // navigate("/startVideoCallPage");
   };
 
   useEffect(() => {

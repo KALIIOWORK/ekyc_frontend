@@ -8,7 +8,7 @@ export const useGetUserByUsername = (username, params) => {
         queryKey: ["getUserByUsername", username],
         queryFn: () => axios.get(`/user/getUserByUsername/${username}`),
         onError: (err) => {
-            console.error(err);
+            //console.error(err);
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -18,3 +18,21 @@ export const useGetUserByUsername = (username, params) => {
         ...params
     });
 };
+
+export const useVerifyCustomer = (params) => {
+    const axios = useAxios();
+    return useMutation({
+        queryKey: ["verifyCustomer"],
+        mutationFn: (formData) => axios.post(`/user/verifyCustomer`, formData),
+        onError: (err) => {
+            //console.error(err);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: err,
+            });
+        },
+        ...params
+
+    });
+}

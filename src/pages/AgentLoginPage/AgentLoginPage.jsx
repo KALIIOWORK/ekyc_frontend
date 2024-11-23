@@ -23,7 +23,7 @@ export const AgentLoginPage = () => {
             setWaiting(true);
             const response = await axios.post(`${BASE_URL}/user/userLogin`, { username, password });
 
-            console.log(response.data)
+            //console.log(response.data)
             if (response.data.isValidUser === false) {
                 setMessage(response.data.message);
                 setError(true);
@@ -47,7 +47,7 @@ export const AgentLoginPage = () => {
         } catch (err) {
             setError(true);
             setWaiting(false);
-            console.error(err);
+            //console.error(err);
             setUsername('');
             setPassword('');
             setMessage(err.response?.data?.error);

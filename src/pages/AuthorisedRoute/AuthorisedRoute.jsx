@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 export const AuthorisedRoute = ({ roles }) => {
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const role = useSelector(state => state.auth.role);
-    console.log("Role:", role);
+    //console.log("Role:", role);
     if (!isLoggedIn) {
         // If the user is not logged in, redirect to the login page
         return <Navigate to="/" />;

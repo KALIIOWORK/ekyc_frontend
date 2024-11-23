@@ -17,8 +17,12 @@ export default {
         'hover-color': 'var(--hover-color)',
         'text-color': 'var(--text-color)',
       },
+      aspectRatio: {
+        '9/16': 9 / 16, // Portrait orientation
+        '16/9': 16 / 9, // Landscape orientation (optional)
+      },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/aspect-ratio')],
 }
 

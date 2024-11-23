@@ -24,6 +24,9 @@ import './index.css';
 import { AuthorisedRoute } from './pages/AuthorisedRoute/AuthorisedRoute';
 import { CustomerPhoto } from './pages/CustomerPage/CustomerPhoto';
 import { AgentVideoCallPage } from './pages/VideoCallPage/AgentVideoCallPage';
+import { AgentProfilePage } from './pages/CustomerQueuePage/AgentProfilePage';
+import { VerifierProfilePage } from './pages/VerificationQueuePage/VerifierProfilePage';
+import { VideoCallSuccessPage } from './pages/CustomerPage/VideoCallSuccessPage';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -44,15 +47,18 @@ function App() {
             <Route path='/startVideoCallPage' element={<StartVideoCallPage />} />
             <Route path='/consentPage' element={<ConsentPage />} />
             <Route path='/videoCallPage/:customerId' element={<VideoCallPage />} />
+            <Route path='/videoCallSuccessPage' element={<VideoCallSuccessPage />} />
             <Route path='/Basic' element={<Basics />} />
             <Route path='/agentLogin' element={<AgentLoginPage />} />
             <Route path='/verifierLogin' element={<VerifierLoginPage />} />
             <Route element={<ProctectedRoute />}>
               <Route element={<AuthorisedRoute roles={['Agent']} />}>
+                <Route path='/agentProfilePage' element={<AgentProfilePage />} />
                 <Route path='/agentVideoCallPage/:customerId' element={<AgentVideoCallPage />} />
                 <Route path="/customerQueuePage" element={<CustomerQueuePage />} />
               </Route>
               <Route element={<AuthorisedRoute roles={['Verifier']} />}>
+                <Route path='/verifierProfilePage' element={<VerifierProfilePage />} />
                 <Route path="/verificationQueuePage" element={<VerificationQueuePage />} />
                 <Route path='/verifyCustomerPage/:customerId' element={<VerifyCustomerPage />} />
               </Route>

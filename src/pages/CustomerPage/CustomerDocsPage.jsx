@@ -7,7 +7,7 @@ export const CustomerDocsPage = () => {
   const navigate = useNavigate();
   const [pancardNumber, setPanNumber] = useState("");
   const [uploadType, setUploadType] = useState("");
-  const [pancardImage, setImage] = useState(null);
+  const [pancardImage, setImage] = useState("");
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -71,6 +71,16 @@ export const CustomerDocsPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!pancardNumber || !pancardImage) {
+      alert("Please fill in all the details");
+      return;
+    }
+
+    if (pancardNumber.length !== 10) {
+      alert("Please enter a valid PAN card number");
+      return;
+    }
     const documentData = {
       pancardNumber,
       pancardImage,
@@ -79,7 +89,7 @@ export const CustomerDocsPage = () => {
       "CustomerPancardDetails",
       JSON.stringify(documentData)
     );
-    console.log("Submitted Document Data:", documentData);
+    //console.log("Submitted Document Data:", documentData);
     navigate("/customerAadharPage");
   };
 
@@ -124,7 +134,11 @@ export const CustomerDocsPage = () => {
             <input
               type="text"
               value={pancardNumber}
-              onChange={(e) => setPanNumber(e.target.value)}
+              onChange={(e) => {
+                if (/^[A-Z0-9]{0,10}$/.test(e.target.value)) {
+                  setPanNumber(e.target.value); // Allow only alphanumeric and restrict to 10 characters
+                }
+              }}
               placeholder="Enter PAN card No"
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               required

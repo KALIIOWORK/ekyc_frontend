@@ -3,6 +3,10 @@ import Header from './Header';
 import { useGetUserByUsername } from '../../utils/api-services/User';
 import { useGeteKYCById } from '../../utils/api-services/eKYC';
 import { useParams } from 'react-router-dom';
+import { useVerifyCustomer } from '../../utils/api-services/User';
+import { useQueryClient } from "react-query";
+import ImageModal from '../VideoCallPage/ImageModal';
+
 
 export const VerifyCustomerPage = () => {
     const username = localStorage.getItem('username');
@@ -11,6 +15,21 @@ export const VerifyCustomerPage = () => {
     const [noCustomersMessage, setNoCustomersMessage] = useState('');
     const { customerId } = useParams();
     const id = customerId;
+    const [verificationComments, setVerificationComments] = useState('');
+    const [verificationStatus, setVerificationStatus] = useState('');
+    const [body, setBody] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
+
+    const handleImageClick = (imageSrc) => {
+        setSelectedImage(imageSrc);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedImage('');
+    };
 
     const { isLoading } = useGetUserByUsername(username, {
         onSuccess: (res) => {
@@ -30,7 +49,30 @@ export const VerifyCustomerPage = () => {
         }
     });
 
-    const specificFields = ["title", "fullName", "DOB", "mobileNumber", "email", "aadharNumber", "pancardNumber"];
+    const { mutate } = useVerifyCustomer(body, {
+        onSuccess: (res) => {
+            queryClient.invalidateQueries("geteKYCById");
+        }
+    });
+
+    const handleAction = (status) => {
+        const updatedBody = {
+            username: verifier.username,
+            eKYCId: customerDetails._id,
+            verificationStatus: status,
+            verificationComments: verificationComments
+        };
+        //console.log("Submitting:", updatedBody);
+        setBody(updatedBody); // Update body state
+        mutate(updatedBody); // Pass updated body to mutate
+    };
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const specificFields = ["fullName", "DOB", "mobileNumber", "email", "aadharNumber", "pancardNumber"];
     const imageFields = [
         { label: 'Aadhar Front Image', key: 'aadharFrontImage' },
         { label: 'Aadhar Back Image', key: 'aadharBackImage' },
@@ -55,7 +97,7 @@ export const VerifyCustomerPage = () => {
                             <span className="font-semibold capitalize">
                                 {key.replace(/([A-Z])/g, " $1").toUpperCase()}
                             </span>
-                            <span>{customerDetails[key] || "N/A"}</span>
+                            <span>{key === "DOB" ? formatDate(customerDetails[key]) : customerDetails[key] || "N/A"}</span>
                         </div>
                     ))}
                 </div>
@@ -72,7 +114,8 @@ export const VerifyCustomerPage = () => {
                                 <img
                                     src={customerDetails[key]}
                                     alt={label}
-                                    className="w-40 h-40 object-cover border rounded-md"
+                                    className="w-40 h-40 object-cover border rounded-md cursor-pointer"
+                                    onClick={() => handleImageClick(customerDetails[key])} // Open modal on image click
                                 />
                             ) : (
                                 <p className="text-red-500">No {label} available</p>
@@ -82,19 +125,85 @@ export const VerifyCustomerPage = () => {
                 </div>
             </div>
 
+            {/* Image Modal */}
+            {isModalOpen && (
+                <ImageModal
+                    isOpen={isModalOpen}
+                    imageSrc={selectedImage}
+                    onClose={handleCloseModal}
+                />
+            )}
+
             {/* Video Section */}
             <div className="p-8">
                 <h3 className="text-xl font-bold text-center mb-2">Video KYC</h3>
                 <div className="flex justify-center items-center">
                     {customerDetails.ekycRecording ? (
-                        <video controls width="300" height="300" className="border rounded-lg">
-                            <source src={customerDetails.ekycRecording} type="video/mp4" />
-                        </video>
+                        <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg aspect-[16/9] border rounded-lg overflow-hidden">
+                            <video
+                                controls
+                                className="absolute top-0 left-0 w-full h-full object-cover"
+                            >
+                                <source src={customerDetails.ekycRecording} type="video/mp4" />
+                            </video>
+                        </div>
                     ) : (
                         <p className="text-center text-red-500">No eKYC recording available</p>
                     )}
                 </div>
             </div>
+
+            {/* Verification Section */}
+            {/* Verification Section */}
+            {customerDetails.verificationStatus === "Pending" ? (
+                <div className="p-8 flex flex-col items-center justify-center w-full max-w-md mx-auto">
+                    <h3 className="text-lg font-bold text-center mb-4">Approve/Reject Customer</h3>
+
+                    {/* Comments Textarea */}
+                    <textarea
+                        className="w-full h-24 p-2 border rounded-md text-black text-sm mb-4"
+                        placeholder="Add comments"
+                        value={verificationComments}
+                        onChange={(e) => setVerificationComments(e.target.value)}
+                    />
+
+                    {/* Button Container */}
+                    <div className="flex justify-center space-x-4 w-full">
+                        {/* Approve Button */}
+                        <button
+                            onClick={() => handleAction("Approved")}
+                            className={`py-2 px-4 rounded-md mb-2 sm:mr-4 transition-colors ${verificationComments
+                                ? "bg-green-500 text-white hover:bg-green-600"
+                                : "bg-gray-400 text-gray-700 cursor-not-allowed"
+                                }`}
+                        >
+                            Approve
+                        </button>
+
+                        {/* Reject Button */}
+                        <button
+                            onClick={() => handleAction("Rejected")}
+                            className={`py-2 px-4 rounded-md mb-2 sm:mr-4 transition-colors ${verificationComments
+                                ? "bg-red-500 text-white hover:bg-red-600"
+                                : "bg-gray-400 text-gray-700 cursor-not-allowed"
+                                }`}
+                        >
+                            Reject
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div className="p-8">
+                    <h3 className="text-lg font-bold text-center mb-2">Verification Status</h3>
+                    <div className="flex justify-center items-center">
+                        <p className={`text-center text-lg ${customerDetails.verificationStatus === 'Verified' ? 'text-green-500' : customerDetails.verificationStatus === 'Rejected' ? 'text-red-500' : 'text-gray-500'}`}>
+                            {customerDetails.verificationStatus}
+                        </p>
+                    </div>
+                </div>
+            )}
+
+
         </div>
     );
 };

@@ -111,6 +111,17 @@ export const CustomerAadharPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!aadharNumber || !aadharFrontImage || !aadharBackImage) {
+      alert("Please fill all the fields.");
+      return;
+    }
+
+    if (aadharNumber.length !== 12) {
+      alert("Aadhaar number must be 12 digits long.");
+      return;
+    }
+
     const documentData = {
       aadharNumber,
       aadharFrontImage,
@@ -141,7 +152,7 @@ export const CustomerAadharPage = () => {
       ...customerPancardDetails,
       ...customerAadharDetails,
     };
-    console.log(customerData);
+    //console.log(customerData);
 
     // Create FormData object
     const formData = new FormData();
@@ -232,14 +243,18 @@ export const CustomerAadharPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
-              type="number"
+              type="number" // Use text to allow any input, but restrict to digits
               value={aadharNumber}
-              onChange={(e) => setAadharNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                if (value.length <= 12) {
+                  setAadharNumber(value); // Update only if the input is a valid 12-digit number
+                }
+              }}
               placeholder="Enter Aadhaar Number"
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               required
             />
-
             <div className="space-y-4">
               {/* Front Image Upload */}
               <label className="block text-white">Upload Front Image</label>

@@ -14,7 +14,7 @@ const VerifierHeader = ({ verifier }) => {
     };
 
     const handleProfile = () => {
-        navigate('/profile'); // Navigate to the profile page
+        navigate('/verifierProfilePage'); // Navigate to the profile page
     };
 
     return (
@@ -37,6 +37,12 @@ const VerifierHeader = ({ verifier }) => {
                             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                         >
                             Profile
+                        </button>
+                        <button
+                            onClick={() => navigate('/verificationQueuePage')}
+                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                            dashboard
                         </button>
                         <button
                             onClick={handleLogout}

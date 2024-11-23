@@ -12,7 +12,7 @@ export const useGetListOfeKYC = (
         queryKey: ["getListOfeKYC", filters],
         queryFn: () => axios.get(`/ekyc/getListOfeKYC`, { params: filters }),
         onError: (err) => {
-            console.error(err);
+            //console.error(err);
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -32,7 +32,7 @@ export const useGeteKYCById = (
         queryKey: ["geteKYCById", id],
         queryFn: () => axios.get(`/ekyc/geteKYCById/${id}`),
         onError: (err) => {
-            console.error(err);
+            //console.error(err);
             Swal.fire({
                 icon: "error",
                 title: "Oops...",

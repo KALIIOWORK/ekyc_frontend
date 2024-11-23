@@ -75,63 +75,55 @@ export const VerificationQueuePage = () => {
             {/* Main Content */}
             <div className="flex-grow flex flex-col items-center py-8 px-10 shadow-sm shadow-gray-950">
                 <h2 className="text-2xl font-bold text-white mb-6">Customer Verification Queue</h2>
-                <div className="w-full bg-white shadow-lg rounded-lg p-6">
+                <div className="w-full bg-white shadow-lg rounded-lg p-6 overflow-x-auto">
                     <table className="w-full border-collapse border border-[#021b41]">
                         <thead>
                             <tr>
-                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">SL No. </th>
-                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Name</th>
+                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Customer</th>
+                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Email</th>
+                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Mobile Number</th>
                                 <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Verification Status</th>
                                 <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Documents</th>
-                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {noCustomersMessage ? (
                                 <tr>
-                                    <td colSpan="4" className="border border-primary-color px-4 py-2 text-gray-800 text-center">
+                                    <td colSpan="5" className="border border-primary-color px-4 py-2 text-gray-800 text-center">
                                         {noCustomersMessage}
                                     </td>
                                 </tr>
-
                             ) : (
-                                customers.map((customer, index) => (
-                                    <tr key={customer} className="hover:bg-gray-100">
-                                        <td className="border border-primary-color px-4 py-2 text-gray-800">{index + 1}</td>
-                                        <td className="border border-primary-color px-4 py-2 text-gray-800">{customer.fullName}</td>
-                                        <td className={`border border-primary-color px-4 py-2 ${getStatusColor(customer.verificationStatus)}`}>
-                                            {customer.verificationStatus}
+                                customers.map((customer) => (
+                                    <tr key={customer._id} className="hover:bg-gray-100">
+                                        <td className="border border-primary-color px-4 py-2 text-gray-800 text-sm">
+                                            <div className="flex items-center">
+                                                <img
+                                                    src={customer.customerPhoto}
+                                                    alt="Profile"
+                                                    className="w-6 h-6 rounded-full"
+                                                />
+                                                <span className="ml-2 ">{customer.fullName}</span>
+                                            </div>
+                                        </td>
+                                        <td className="border border-primary-color px-4 py-2 text-gray-800">{customer.email}</td>
+                                        <td className="border border-primary-color px-4 py-2 text-gray-800">
+                                            +91(IN) {customer.mobileNumber}
                                         </td>
                                         <td
-                                            onClick={() => navigate(`/VerifyCustomerPage/${customer._id}`)}
-                                            className="border border-primary-color px-4 py-2 text-primary-color  underline"
+                                            className={`border border-primary-color px-4 py-2 ${getStatusColor(
+                                                customer.verificationStatus
+                                            )}`}
                                         >
-                                            view kyc
+                                            {customer.verificationStatus}
                                         </td>
-                                        <td className="border border-primary-color px-4 py-2 text-gray-800">
-                                            <div className="flex flex-col space-y-2">
-                                                <div className="flex space-x-2">
-                                                    <button
-                                                        className="bg-green-500 text-white px-2 py-0.5 rounded"
-                                                        onClick={() => handleAccept(customer._id)}
-                                                    >
-                                                        Accept
-                                                    </button>
-                                                    <button
-                                                        className="bg-red-500 text-white px-2 py-0.5 rounded"
-                                                        onClick={() => handleReject(customer._id)}
-                                                    >
-                                                        Reject
-                                                    </button>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Add a comment"
-                                                    className="border border-gray-300 rounded px-2 py-1"
-                                                    value={comments[customer._id] || ''}
-                                                    onChange={(e) => handleCommentChange(customer._id, e.target.value)}
-                                                />
-                                            </div>
+                                        <td className="border border-primary-color px-4 py-2">
+                                            <button
+                                                onClick={() => navigate(`/VerifyCustomerPage/${customer._id}`)}
+                                                className="bg-text-color text-white px-2 py-1 rounded transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                                            >
+                                                View KYC
+                                            </button>
                                         </td>
                                     </tr>
                                 ))
@@ -144,5 +136,6 @@ export const VerificationQueuePage = () => {
             {/* Footer */}
             <Footer />
         </div>
+
     );
 };

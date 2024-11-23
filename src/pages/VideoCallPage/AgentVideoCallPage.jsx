@@ -83,38 +83,62 @@ export const AgentVideoCallPage = () => {
                             <img
                                 src={customerDetails.aadharFrontImage}
                                 alt="Aadhaar Front"
-                                className="w-16 lg:w-20 rounded-lg cursor-pointer"
-                                onClick={() => handleImageClick(customerDetails.aadharFrontImage)}
+                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
                             />
-                            <span className="text-gray-900">Aadhaar Front Image</span>
+                            <span className="text-gray-900 flex-grow">Aadhaar Front Image</span>
+                            <button
+                                className="bg-text-color text-white py-1 px-2 rounded-md hover:bg-hover-color transition-colors"
+                                onClick={() => handleImageClick(customerDetails.aadharFrontImage)}
+                            >
+                                View
+                            </button>
                         </div>
+
                         <div className="flex items-center space-x-4 p-2 bg-gray-200 rounded-lg shadow-md">
                             <img
                                 src={customerDetails.aadharBackImage}
                                 alt="Aadhaar Back"
-                                className="w-16 lg:w-20 rounded-lg cursor-pointer"
-                                onClick={() => handleImageClick(customerDetails.aadharBackImage)}
+                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
                             />
-                            <span className="text-gray-900">Aadhaar Back Image</span>
+                            <span className="text-gray-900 flex-grow">Aadhaar Back Image</span>
+                            <button
+                                className="bg-text-color text-white py-1 px-2 rounded-md hover:bg-hover-color transition-colors"
+                                onClick={() => handleImageClick(customerDetails.aadharBackImage)}
+                            >
+                                View
+                            </button>
                         </div>
+
                         <div className="flex items-center space-x-4 p-2 bg-gray-200 rounded-lg shadow-md">
                             <img
                                 src={customerDetails.pancardImage}
                                 alt="Pancard"
-                                className="w-16 lg:w-20 rounded-lg cursor-pointer"
-                                onClick={() => handleImageClick(customerDetails.pancardImage)}
+                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
                             />
-                            <span className="text-gray-900">PAN Card</span>
+                            <span className="text-gray-900 flex-grow">PAN Card</span>
+                            <button
+                                className="bg-text-color text-white py-1 px-2 rounded-md hover:bg-hover-color transition-colors"
+                                onClick={() => handleImageClick(customerDetails.pancardImage)}
+                            >
+                                View
+                            </button>
                         </div>
+
                         <div className="flex items-center space-x-4 p-2 bg-gray-200 rounded-lg shadow-md">
                             <img
                                 src={customerDetails.customerPhoto}
                                 alt="Photo"
-                                className="w-16 lg:w-20 rounded-lg cursor-pointer"
-                                onClick={() => handleImageClick(customerDetails.customerPhoto)}
+                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
                             />
-                            <span className="text-gray-900">Customer Photo</span>
+                            <span className="text-gray-900 flex-grow">Customer Photo</span>
+                            <button
+                                className="bg-text-color text-white py-1 px-2 rounded-md hover:bg-hover-color transition-colors"
+                                onClick={() => handleImageClick(customerDetails.customerPhoto)}
+                            >
+                                View
+                            </button>
                         </div>
+
                     </div>
                 </div>
 

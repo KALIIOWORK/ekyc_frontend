@@ -255,31 +255,30 @@ export const CustomerAadharPage = () => {
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               required
             />
-            <div className="space-y-4">
+            <div className="flex flex-col lg:flex-row w-full space-x-0 lg:space-x-2">
               {/* Front Image Upload */}
-              <label className="block text-white">Upload Front Image</label>
-              <select
-                onChange={(e) => handleUploadTypeChange(e, "front")}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                required
-              >
-                <option value="">Select Upload Option</option>
-                <option value="upload">Upload from Device</option>
-                <option value="capture">Capture from Camera</option>
-              </select>
-
-              {uploadTypeFront === "upload" && (
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, "front")}
+              <div className="w-full lg:w-1/2 space-y-2">
+                <label className="block text-white">Upload Front Image</label>
+                <select
+                  onChange={(e) => handleUploadTypeChange(e, "front")}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                />
-              )}
+                  required
+                >
+                  <option value="">Select Upload Option</option>
+                  <option value="upload">Upload from Device</option>
+                  <option value="capture">Capture from Camera</option>
+                </select>
 
-              {uploadTypeFront === "capture" &&
-                isCameraOpen &&
-                captureMode === "front" && (
+                {uploadTypeFront === "upload" && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, "front")}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                  />
+                )}
+
+                {uploadTypeFront === "capture" && isCameraOpen && captureMode === "front" && (
                   <div className="flex flex-col items-center">
                     <video
                       ref={videoRefFront}
@@ -296,31 +295,40 @@ export const CustomerAadharPage = () => {
                     </button>
                   </div>
                 )}
+                {aadharFrontImage && (
+                  <div className="mt-3 md:mt-0">
+                    <img
+                      src={aadharFrontImage}
+                      alt="Aadhar Front"
+                      className="w-full h-48 object-contain rounded-md" // Adjusted height for a rectangular shape
+                    />
+                  </div>
+                )}
+              </div>
 
               {/* Back Image Upload */}
-              <label className="block text-white">Upload Back Image</label>
-              <select
-                onChange={(e) => handleUploadTypeChange(e, "back")}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                required
-              >
-                <option value="">Select Upload Option</option>
-                <option value="upload">Upload from Device</option>
-                <option value="capture">Capture from Camera</option>
-              </select>
-
-              {uploadTypeBack === "upload" && (
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, "back")}
+              <div className="w-full lg:w-1/2 space-y-2">
+                <label className="block text-white">Upload Back Image</label>
+                <select
+                  onChange={(e) => handleUploadTypeChange(e, "back")}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                />
-              )}
+                  required
+                >
+                  <option value="">Select Upload Option</option>
+                  <option value="upload">Upload from Device</option>
+                  <option value="capture">Capture from Camera</option>
+                </select>
 
-              {uploadTypeBack === "capture" &&
-                isCameraOpen &&
-                captureMode === "back" && (
+                {uploadTypeBack === "upload" && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, "back")}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                  />
+                )}
+
+                {uploadTypeBack === "capture" && isCameraOpen && captureMode === "back" && (
                   <div className="flex flex-col items-center">
                     <video
                       ref={videoRefBack}
@@ -337,17 +345,6 @@ export const CustomerAadharPage = () => {
                     </button>
                   </div>
                 )}
-
-              <div className="flex flex-col md:flex-row md:space-x-4">
-                {aadharFrontImage && (
-                  <div className="mt-3 md:mt-0">
-                    <img
-                      src={aadharFrontImage}
-                      alt="Aadhar Front"
-                      className="w-full h-48 object-contain rounded-md" // Adjusted height for a rectangular shape
-                    />
-                  </div>
-                )}
                 {aadharBackImage && (
                   <div className="mt-3 md:mt-0">
                     <img
@@ -359,6 +356,7 @@ export const CustomerAadharPage = () => {
                 )}
               </div>
             </div>
+
 
             <button
               type="submit"

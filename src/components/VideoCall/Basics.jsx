@@ -162,12 +162,12 @@ export const Basics = ({ eKYCId }) => {
                                 <span>Agent is Offline</span>
                             </div>
                         )}
-                        <button
+                        {/* <button
                             onClick={handleEndCall}
                             className="text-gray-700 bg-gray-200 rounded-lg shadow-md font-semibold py-2 px-4 lg:px-6 hover:bg-red-600 hover:text-white transition duration-200"
                         >
                             End Call
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             )}

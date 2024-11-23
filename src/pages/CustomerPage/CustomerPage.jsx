@@ -57,7 +57,7 @@ export const CustomerPage = () => {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             {/* Title */}
-                            <div>
+                            <div className='w-full'>
                                 <label className="block text-white mb-2">
                                     Title<span className="text-red-500">*</span>
                                 </label>
@@ -75,7 +75,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* First Name */}
-                            <div>
+                            <div className='w-full'>
                                 <label className="block text-white mb-2">
                                     First Name<span className="text-red-500">*</span>
                                 </label>
@@ -91,7 +91,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* Middle Name */}
-                            <div>
+                            <div className='w-full'>
                                 <label className="block text-white mb-2">Middle Name</label>
                                 <input
                                     type="text"
@@ -104,7 +104,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* Last Name */}
-                            <div>
+                            <div className='w-full'>
                                 <label className="block text-white mb-2">
                                     Last Name<span className="text-red-500">*</span>
                                 </label>
@@ -120,7 +120,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* DOB */}
-                            <div>
+                            <div className='w-full'>
                                 <label className="block text-white mb-2">
                                     DOB<span className="text-red-500">*</span>
                                 </label>
@@ -135,7 +135,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* Gender */}
-                            <div>
+                            <div className='w-full'>
                                 <label className="block text-white mb-2">
                                     Gender<span className="text-red-500">*</span>
                                 </label>
@@ -154,7 +154,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* Mobile */}
-                            <div className="col-span-2">
+                            <div className="col-span-2 w-full">
                                 <label className="block text-white mb-2">
                                     Mobile<span className="text-red-500">*</span>
                                 </label>
@@ -184,7 +184,7 @@ export const CustomerPage = () => {
                             </div>
 
                             {/* Email */}
-                            <div className="col-span-2">
+                            <div className="col-span-2 w-full">
                                 <label className="block text-white mb-2">
                                     Email<span className="text-red-500">*</span>
                                 </label>

@@ -23,6 +23,17 @@ export const CustomerPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!formData.title || !formData.firstName || !formData.lastName || !formData.DOB || !formData.gender || !formData.mobileNumber || !formData.email) {
+            alert('Please fill all the required fields');
+            return;
+        }
+
+        if (formData.mobileNumber.length !== 10) {
+            alert('Please enter a valid mobile number');
+            return;
+        }
+
         localStorage.setItem('CustomerDetails', JSON.stringify(formData));
         navigate('/customerPhoto');
         console.log('Form Data:', formData);

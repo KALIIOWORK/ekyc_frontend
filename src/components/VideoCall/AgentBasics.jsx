@@ -70,7 +70,14 @@ export const AgentBasics = ({ eKYCId }) => {
                     startRecordinguid: startRecordinguid,
                     startRecordingtoken: startRecordingtoken,
                     customeruid: customeruid
-                })
+                },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
+                )
                 .then((response) => {
                     setSid(response.data.sid);
                     setResourceId(response.data.resourceId);
@@ -125,7 +132,14 @@ export const AgentBasics = ({ eKYCId }) => {
                 ekycId: eKYCId,
                 startRecordinguid: startRecordinguid,
                 startRecordingtoken: startRecordingtoken
-            })
+            },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            )
             .then((response) => {
                 console.log("Recording stopped successfully:", response.data);
             })

@@ -95,7 +95,7 @@ export const AgentVideoCallPage = () => {
                                 className="w-16 lg:w-20 rounded-lg cursor-pointer"
                                 onClick={() => handleImageClick(customerDetails.aadharBackImage)}
                             />
-                            <span className="text-gray-900">PAN Card</span>
+                            <span className="text-gray-900">Aadhaar Back Image</span>
                         </div>
                         <div className="flex items-center space-x-4 p-2 bg-gray-200 rounded-lg shadow-md">
                             <img
@@ -113,7 +113,7 @@ export const AgentVideoCallPage = () => {
                                 className="w-16 lg:w-20 rounded-lg cursor-pointer"
                                 onClick={() => handleImageClick(customerDetails.customerPhoto)}
                             />
-                            <span className="text-gray-900">Photo</span>
+                            <span className="text-gray-900">Customer Photo</span>
                         </div>
                     </div>
                 </div>

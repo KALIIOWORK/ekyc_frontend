@@ -47,6 +47,8 @@ export const CustomerQueuePage = () => {
     localStorage.setItem('startRecordinguid', customer.startRecordinguid)
     localStorage.setItem('startRecordingtoken', customer.startRecordingtoken)
     localStorage.setItem('agentuid', customer.agentuid)
+    localStorage.setItem('customertoken', customer.customertoken)
+    localStorage.setItem('customeruid', customer.customeruid)
     // Navigate to the customer queue page and pass the customer ID as a query parameter
     navigate(`/agentVideoCallPage/${customer._id}`);
 
@@ -69,7 +71,7 @@ export const CustomerQueuePage = () => {
               <div className="max-h-[300px] overflow-hidden" key={index}> {/* Set max height here */}
                 <div className="bg-white rounded-lg shadow p-4 text-center border-2 border-[#021b41] ">
                   <img
-                    src={person1}
+                    src={customer.customerPhoto ? customer.customerPhoto : person1}
                     alt={customer.fullName}
                     className="w-24 h-24 rounded-full mx-auto mb-4"
                   />

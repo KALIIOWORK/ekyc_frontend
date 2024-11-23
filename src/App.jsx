@@ -24,6 +24,8 @@ import './index.css';
 import { AuthorisedRoute } from './pages/AuthorisedRoute/AuthorisedRoute';
 import { CustomerPhoto } from './pages/CustomerPage/CustomerPhoto';
 import { AgentVideoCallPage } from './pages/VideoCallPage/AgentVideoCallPage';
+import { AgentProfilePage } from './pages/CustomerQueuePage/AgentProfilePage';
+import { VerifierProfilePage } from './pages/VerificationQueuePage/VerifierProfilePage';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -49,10 +51,12 @@ function App() {
             <Route path='/verifierLogin' element={<VerifierLoginPage />} />
             <Route element={<ProctectedRoute />}>
               <Route element={<AuthorisedRoute roles={['Agent']} />}>
+                <Route path='/agentProfilePage' element={<AgentProfilePage />} />
                 <Route path='/agentVideoCallPage/:customerId' element={<AgentVideoCallPage />} />
                 <Route path="/customerQueuePage" element={<CustomerQueuePage />} />
               </Route>
               <Route element={<AuthorisedRoute roles={['Verifier']} />}>
+                <Route path='/verifierProfilePage' element={<VerifierProfilePage />} />
                 <Route path="/verificationQueuePage" element={<VerificationQueuePage />} />
                 <Route path='/verifyCustomerPage/:customerId' element={<VerifyCustomerPage />} />
               </Route>

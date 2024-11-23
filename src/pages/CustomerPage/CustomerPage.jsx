@@ -159,7 +159,13 @@ export const CustomerPage = () => {
                                         type="tel"
                                         name="mobileNumber"
                                         value={formData.mobileNumber}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            // Allow only numbers and limit to 10 digits
+                                            if (/^\d{0,10}$/.test(value)) {
+                                                setFormData({ ...formData, mobileNumber: value });
+                                            }
+                                        }}
                                         placeholder="Mobile Number"
                                         className="w-full px-4 py-2 border focus:outline-none focus:border-blue-500"
                                         required

@@ -46,12 +46,12 @@ export const CustomerPage = () => {
             <Header />
 
             {/* Main Content */}
-            <div className="w-full flex flex-col items-center justify-center py-6 px-8 md:px-56">
-                <div className="w-full p-2">
-                    <h2 className="text-2xl font-semibold mb-1 text-center text-white">
+            <div className="w-full flex flex-col items-center justify-center py-6 px-4 md:px-10 lg:px-20">
+                <div className="w-full max-w-[95%] md:max-w-3xl lg:max-w-5xl p-4">
+                    <h2 className="text-xl md:text-2xl font-semibold mb-1 text-center text-white">
                         Please Enter Your Details
                     </h2>
-                    <span className="text-sm text-white mb-10 block text-center">
+                    <span className="text-sm text-gray-500 mb-6 block text-center">
                         (As in the ID Card you have to submit)
                     </span>
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -65,7 +65,7 @@ export const CustomerPage = () => {
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-2 border text-gray-500 rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 border text-gray-500 rounded-md focus:outline-none focus:border-blue-500"
                                     required
                                 >
                                     <option value="">Title</option>
@@ -76,8 +76,8 @@ export const CustomerPage = () => {
 
                             {/* First Name */}
                             <div>
-                                <label className="block text-white mb-2">First Name
-                                    <span className="text-red-500">*</span>
+                                <label className="block text-white mb-2">
+                                    First Name<span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -85,7 +85,7 @@ export const CustomerPage = () => {
                                     value={formData.firstName}
                                     onChange={handleChange}
                                     placeholder="First Name"
-                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                     required
                                 />
                             </div>
@@ -99,14 +99,14 @@ export const CustomerPage = () => {
                                     value={formData.middleName}
                                     onChange={handleChange}
                                     placeholder="Middle Name"
-                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                 />
                             </div>
 
                             {/* Last Name */}
                             <div>
-                                <label className="block text-white mb-2">Last Name
-                                    <span className="text-red-500">*</span>
+                                <label className="block text-white mb-2">
+                                    Last Name<span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -114,36 +114,36 @@ export const CustomerPage = () => {
                                     value={formData.lastName}
                                     onChange={handleChange}
                                     placeholder="Last Name"
-                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                     required
                                 />
                             </div>
 
                             {/* DOB */}
                             <div>
-                                <label className="block text-white mb-2">DOB
-                                    <span className="text-red-500">*</span>
+                                <label className="block text-white mb-2">
+                                    DOB<span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="date"
                                     name="DOB"
                                     value={formData.DOB}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-2 text-gray-500 border rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 text-gray-500 border rounded-md focus:outline-none focus:border-blue-500"
                                     required
                                 />
                             </div>
 
                             {/* Gender */}
                             <div>
-                                <label className="block text-white mb-2">Gender
-                                    <span className="text-red-500">*</span>
+                                <label className="block text-white mb-2">
+                                    Gender<span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     name="gender"
                                     value={formData.gender}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-2 border text-gray-500 rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 border text-gray-500 rounded-md focus:outline-none focus:border-blue-500"
                                     required
                                 >
                                     <option value="">Select Gender</option>
@@ -155,8 +155,8 @@ export const CustomerPage = () => {
 
                             {/* Mobile */}
                             <div className="col-span-2">
-                                <label className="block text-white mb-2">Mobile
-                                    <span className="text-red-500">*</span>
+                                <label className="block text-white mb-2">
+                                    Mobile<span className="text-red-500">*</span>
                                 </label>
                                 <div className="flex flex-row">
                                     <input
@@ -172,13 +172,12 @@ export const CustomerPage = () => {
                                         value={formData.mobileNumber}
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            // Allow only numbers and limit to 10 digits
                                             if (/^\d{0,10}$/.test(value)) {
                                                 setFormData({ ...formData, mobileNumber: value });
                                             }
                                         }}
                                         placeholder="Mobile Number"
-                                        className="w-full px-4 py-2 border focus:outline-none focus:border-blue-500"
+                                        className="w-full px-3 py-2 border focus:outline-none focus:border-blue-500"
                                         required
                                     />
                                 </div>
@@ -186,8 +185,8 @@ export const CustomerPage = () => {
 
                             {/* Email */}
                             <div className="col-span-2">
-                                <label className="block text-white mb-2">Email
-                                    <span className="text-red-500">*</span>
+                                <label className="block text-white mb-2">
+                                    Email<span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="email"
@@ -195,7 +194,7 @@ export const CustomerPage = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     placeholder="Email ID"
-                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                                     required
                                 />
                             </div>
@@ -205,15 +204,15 @@ export const CustomerPage = () => {
                         <div className="flex justify-center md:justify-end space-x-4 mt-6">
                             <button
                                 type="submit"
-                                className=" text-white px-16 py-2 bg-text-color font-medium rounded-lg transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                                className="text-white px-12 py-2 bg-text-color font-medium rounded-lg transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
                             >
                                 Submit
                             </button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
+
     );
 };

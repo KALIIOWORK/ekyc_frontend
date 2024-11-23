@@ -24,6 +24,14 @@ export const CustomerDocsPage = () => {
     }
   };
 
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("CustomerPancardDetails"));
+    if (savedData) {
+      setPanNumber(savedData.pancardNumber);
+      setImage(savedData.pancardImage);
+    }
+  }, []);
+
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });

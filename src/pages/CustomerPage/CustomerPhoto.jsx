@@ -18,6 +18,13 @@ export const CustomerPhoto = () => {
     }
   }, [isCameraOpen]);
 
+  useEffect(() => {
+    const savedData = localStorage.getItem("customerPhoto");
+    if (savedData) {
+      setPhoto(savedData);
+    }
+  }, []);
+
   // Starts the camera and shows the feed
   const handlePhotoClick = async () => {
     if (isCameraOpen) return; // Prevent reopening if already open

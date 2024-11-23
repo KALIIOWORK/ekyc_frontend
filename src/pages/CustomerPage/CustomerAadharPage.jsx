@@ -109,6 +109,15 @@ export const CustomerAadharPage = () => {
     }
   };
 
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("CustomerAadharDetails"));
+    if (savedData) {
+      setAadharNumber(savedData.aadharNumber);
+      setAadharFrontImage(savedData.aadharFrontImage);
+      setAadharBackImage(savedData.aadharBackImage);
+    }
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 

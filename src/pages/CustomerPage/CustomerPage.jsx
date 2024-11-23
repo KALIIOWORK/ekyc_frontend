@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 
@@ -18,8 +18,16 @@ export const CustomerPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedData = { ...formData, [name]: value };
+    setFormData(updatedData);
   };
+
+  useEffect(() => {
+    const savedData = localStorage.getItem("CustomerDetails");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

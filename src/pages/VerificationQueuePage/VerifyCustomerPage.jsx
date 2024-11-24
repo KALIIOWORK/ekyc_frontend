@@ -38,6 +38,7 @@ export const VerifyCustomerPage = () => {
     });
 
     const { isLoadingCustomer, isError, data } = useGeteKYCById(id, {
+        refetchOnWindowFocus: true,
         onSuccess: (res) => {
             if (res.data.status) {
                 setCustomerDetails(res.data.eKYC);
@@ -51,8 +52,8 @@ export const VerifyCustomerPage = () => {
 
     const { mutate } = useVerifyCustomer(body, {
         onSuccess: (res) => {
-            queryClient.invalidateQueries("geteKYCById");
-        }
+            queryClient.invalidateQueries(["geteKYCById", id]); // Ensure data is refetched
+        },
     });
 
     const handleAction = (status) => {
@@ -65,6 +66,7 @@ export const VerifyCustomerPage = () => {
         //console.log("Submitting:", updatedBody);
         setBody(updatedBody); // Update body state
         mutate(updatedBody); // Pass updated body to mutate
+        window.location.reload(); // Reload page to show updated data
     };
 
     const formatDate = (dateString) => {
@@ -171,7 +173,7 @@ export const VerifyCustomerPage = () => {
                     <div className="flex justify-center space-x-4 w-full">
                         {/* Approve Button */}
                         <button
-                            onClick={() => handleAction("Approved")}
+                            onClick={() => handleAction("Verified")}
                             className={`py-2 px-4 rounded-md mb-2 sm:mr-4 transition-colors ${verificationComments
                                 ? "bg-green-500 text-white hover:bg-green-600"
                                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
@@ -193,14 +195,25 @@ export const VerifyCustomerPage = () => {
                     </div>
                 </div>
             ) : (
-                <div className="p-8">
-                    <h3 className="text-lg font-bold text-center mb-2">Verification Status</h3>
-                    <div className="flex justify-center items-center">
-                        <p className={`text-center text-lg ${customerDetails.verificationStatus === 'Verified' ? 'text-green-500' : customerDetails.verificationStatus === 'Rejected' ? 'text-red-500' : 'text-gray-500'}`}>
-                            {customerDetails.verificationStatus}
-                        </p>
-                    </div>
-                </div>
+                isLoading || isLoadingCustomer ? (
+                    <p className="text-center text-gray-500">Loading...</p>
+                ) : (
+                    customerDetails.verificationStatus && (
+                        <div className="p-8">
+                            <h3 className="text-lg font-bold text-center mb-2">Verification Status</h3>
+                            <div className="flex justify-center items-center">
+                                <p className={`text-center text-lg ${customerDetails.verificationStatus === 'Verified'
+                                    ? 'text-green-500'
+                                    : customerDetails.verificationStatus === 'Rejected'
+                                        ? 'text-red-500'
+                                        : 'text-gray-500'
+                                    }`}>
+                                    {customerDetails.verificationStatus}
+                                </p>
+                            </div>
+                        </div>
+                    )
+                )
             )}
 
 

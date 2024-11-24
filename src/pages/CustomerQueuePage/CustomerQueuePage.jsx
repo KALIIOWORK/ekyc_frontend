@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from './Header';
 import CustomerCard from './CustomerCard';
 import Footer from './Footer';
@@ -9,6 +9,7 @@ import user from '../../assets/user.png';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import person1 from '../../assets/person1.jpg';
+import { Loader } from '../../components/Loader/Loader';
 
 
 export const CustomerQueuePage = () => {
@@ -21,6 +22,7 @@ export const CustomerQueuePage = () => {
   });
   const [agent, setAgent] = useState('');
   const username = localStorage.getItem('username');
+  const [isCalling, setIsCalling] = useState(false);
 
   const { isLoading } = useGetUserByUsername(username, {
     onSuccess: (res) => {
@@ -41,6 +43,14 @@ export const CustomerQueuePage = () => {
     }
   });
 
+  useEffect(() => {
+    if (isCalling) {
+      queryClient.invalidateQueries(["getListOfeKYC", filters]); // Ensure queryClient is imported
+      setIsCalling(false);
+    }
+  }, [isCalling]);
+
+
   const handleJoinCallClick = ({ customer }) => {
     localStorage.setItem('channelName', customer.channelName)
     localStorage.setItem('agenttoken', customer.agenttoken)
@@ -50,10 +60,13 @@ export const CustomerQueuePage = () => {
     localStorage.setItem('customertoken', customer.customertoken)
     localStorage.setItem('customeruid', customer.customeruid)
     // Navigate to the customer queue page and pass the customer ID as a query parameter
+    setIsCalling(true);
     navigate(`/agentVideoCallPage/${customer._id}`);
-
   };
 
+  if (isLoading || isLoadingCustomers) {
+    return <Loader />;
+  }
   return (
     <div className="flex flex-col min-h-screen bg-primary-color">
       {/* Header */}

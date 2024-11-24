@@ -66,7 +66,7 @@ export const CustomerPage = () => {
                     <h2 className="text-xl md:text-2xl font-semibold mb-1 text-center text-white">
                         Please Enter Your Details
                     </h2>
-                    <span className="text-sm text-gray-500 mb-6 block text-center">
+                    <span className="text-sm text-text-color mb-6 block text-center">
                         (As in the ID Card you have to submit)
                     </span>
                     <form onSubmit={handleSubmit} className="space-y-6">

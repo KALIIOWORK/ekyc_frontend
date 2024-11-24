@@ -203,10 +203,10 @@ export const CustomerAadharPage = () => {
     );
     // Call the mutate function with the FormData
     mutate(formData);
-    localStorage.removeItem("CustomerDetails");
-    localStorage.removeItem("CustomerPancardDetails");
-    localStorage.removeItem("CustomerAadharDetails");
-    localStorage.removeItem("customerPhoto");
+    // localStorage.removeItem("CustomerDetails");
+    // localStorage.removeItem("CustomerPancardDetails");
+    // localStorage.removeItem("CustomerAadharDetails");
+    // localStorage.removeItem("customerPhoto");
 
     // Navigate to the next page
     // navigate("/startVideoCallPage");

@@ -139,14 +139,16 @@ export const CustomerPage = () => {
                                 <label className="block text-white mb-2">
                                     DOB<span className="text-red-500">*</span>
                                 </label>
-                                <input
-                                    type="date"
-                                    name="DOB"
-                                    value={formData.DOB}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 text-gray-500 border rounded-md focus:outline-none focus:border-blue-500"
-                                    required
-                                />
+                                <div className="relative w-full">
+                                    <input
+                                        type="date"
+                                        name="DOB"
+                                        value={formData.DOB}
+                                        onChange={handleChange}
+                                        className="block w-full px-4 py-2 h-12 text-gray-500 border rounded-md focus:outline-none focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
                             </div>
 
                             {/* Gender */}

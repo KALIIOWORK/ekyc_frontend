@@ -39,7 +39,7 @@ const Topbar = () => {
                 <div className="font-bold text-md md:text-2xl pb-1 cursor-pointer"
                     onClick={() => navigate('/home')}
                 >
-                    eKYC Connect
+                    VCIP
                 </div>
             </div>
 

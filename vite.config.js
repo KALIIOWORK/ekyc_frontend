@@ -8,7 +8,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "../../../index.scss";`, // Optional: Import global SCSS variables or mixins
+        additionalData: `@import "../../../index.css";`, // Optional: Import global SCSS variables or mixins
       },
     },
   },

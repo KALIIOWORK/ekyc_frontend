@@ -8,8 +8,7 @@ export default defineConfig({
   base: '/',
   plugins: [react(), rewriteAll()],
   server: {
-    // Vite-specific setting to ensure React SPA routing works in development
-    middlewareMode: true,
+    historyApiFallback: true, // Ensures local dev handles SPA routes
   },
   build: {
     // Output settings for production build

@@ -27,6 +27,7 @@ import { AgentVideoCallPage } from './pages/VideoCallPage/AgentVideoCallPage';
 import { AgentProfilePage } from './pages/CustomerQueuePage/AgentProfilePage';
 import { VerifierProfilePage } from './pages/VerificationQueuePage/VerifierProfilePage';
 import { VideoCallSuccessPage } from './pages/CustomerPage/VideoCallSuccessPage';
+import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -64,6 +65,7 @@ function App() {
               </Route>
             </Route>
             <Route path='/unauthorized' element={<UnauthorizedPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </ReactQueryProvider>

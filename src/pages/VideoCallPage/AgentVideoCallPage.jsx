@@ -83,7 +83,7 @@ export const AgentVideoCallPage = () => {
                             <img
                                 src={customerDetails.aadharFrontImage}
                                 alt="Aadhaar Front"
-                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
+                                className="w-20 lg:w-24 h-20  rounded-lg cursor-pointer object-contain"
                             />
                             <span className="text-gray-900 flex-grow">Aadhaar Front Image</span>
                             <button
@@ -98,7 +98,7 @@ export const AgentVideoCallPage = () => {
                             <img
                                 src={customerDetails.aadharBackImage}
                                 alt="Aadhaar Back"
-                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
+                                className="w-20 lg:w-24 h-20 object-contain rounded-lg cursor-pointer"
                             />
                             <span className="text-gray-900 flex-grow">Aadhaar Back Image</span>
                             <button
@@ -113,7 +113,7 @@ export const AgentVideoCallPage = () => {
                             <img
                                 src={customerDetails.pancardImage}
                                 alt="Pancard"
-                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
+                                className="w-20 lg:w-24 h-20 object-contain rounded-lg cursor-pointer"
                             />
                             <span className="text-gray-900 flex-grow">PAN Card</span>
                             <button
@@ -128,7 +128,7 @@ export const AgentVideoCallPage = () => {
                             <img
                                 src={customerDetails.customerPhoto}
                                 alt="Photo"
-                                className="w-20 lg:w-24 h-20 object-cover rounded-lg cursor-pointer"
+                                className="w-20 lg:w-24 h-20 object-contain rounded-lg cursor-pointer"
                             />
                             <span className="text-gray-900 flex-grow">Customer Photo</span>
                             <button

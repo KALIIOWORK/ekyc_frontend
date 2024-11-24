@@ -113,12 +113,14 @@ export const VerifyCustomerPage = () => {
                         <div key={key} className="flex flex-col items-center bg-white p-2 rounded-md shadow-md text-black">
                             <span className="font-semibold mb-2">{label}</span>
                             {customerDetails[key] ? (
-                                <img
-                                    src={customerDetails[key]}
-                                    alt={label}
-                                    className="w-40 h-40 object-cover border rounded-md cursor-pointer"
-                                    onClick={() => handleImageClick(customerDetails[key])} // Open modal on image click
-                                />
+                                <div className="w-60 h-40 relative">
+                                    <img
+                                        src={customerDetails[key]}
+                                        alt={label}
+                                        className="w-full h-full object-contain border rounded-md cursor-pointer"
+                                        onClick={() => handleImageClick(customerDetails[key])} // Open modal on image click
+                                    />
+                                </div>
                             ) : (
                                 <p className="text-red-500">No {label} available</p>
                             )}
@@ -126,6 +128,7 @@ export const VerifyCustomerPage = () => {
                     ))}
                 </div>
             </div>
+
 
             {/* Image Modal */}
             {isModalOpen && (

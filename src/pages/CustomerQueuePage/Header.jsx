@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
 import { FaUserCircle } from 'react-icons/fa';
+import verification from '../../assets/verification.png';
 
 const Header = ({ agent }) => {
   const navigate = useNavigate();
@@ -19,7 +20,19 @@ const Header = ({ agent }) => {
 
   return (
     <header className="flex justify-between items-center px-2 md:px-8 py-6 bg-primary-color shadow-sm shadow-gray-200 relative">
-      <h1 className="text-lg sm:text-2xl font-semibold text-white">Video eKYC</h1>
+      <div className="flex items-center space-x-4">
+        <div className="rounded-full w-8 h-8 flex items-center justify-center">
+          <img
+            src={verification}
+            alt="eKYC Icon"
+            className="w-8 h-8"
+          />
+        </div>
+        <div className="font-bold text-md md:text-2xl pb-1 cursor-pointer text-white"
+        >
+          VCIP
+        </div>
+      </div>
       <div className="flex items-center space-x-3">
         <div
           className="flex items-center space-x-2 cursor-pointer relative"

@@ -13,9 +13,15 @@ export const VerificationQueuePage = () => {
     const [noCustomersMessage, setNoCustomersMessage] = useState('');
     const [isVerified, setIsVerified] = useState(false);
     const [filters, setFilters] = useState({
-        isVerified: isVerified,
+        verificationStatus: 'Pending'
     });
     const [comments, setComments] = useState({});
+
+    const handleStatusFilter = (status) => {
+        setFilters({
+            verificationStatus: status
+        });
+    };
 
     const handleCommentChange = (id, value) => {
         setComments(prevComments => ({
@@ -75,6 +81,32 @@ export const VerificationQueuePage = () => {
             {/* Main Content */}
             <div className="flex-grow flex flex-col items-center py-8 px-10 shadow-sm shadow-gray-950">
                 <h2 className="text-2xl font-bold text-white mb-6">Customer Verification Queue</h2>
+                {/* Filter Section */}
+                <div className="mb-4 w-full bg-white shadow-lg rounded-lg p-2 flex justify-between">
+                    {/* Filter for Pending */}
+                    <div
+                        onClick={() => handleStatusFilter('Pending')}
+                        className={`cursor-pointer w-full text-center bg-yellow-500 text-white`}
+                    >
+                        Pending
+                    </div>
+
+                    {/* Filter for Verified */}
+                    <div
+                        onClick={() => handleStatusFilter('Verified')}
+                        className={`cursor-pointer w-full text-center bg-green-600 text-white`}
+                    >
+                        Verified
+                    </div>
+
+                    {/* Filter for Rejected */}
+                    <div
+                        onClick={() => handleStatusFilter('Rejected')}
+                        className={`cursor-pointer w-full text-center bg-red-600 text-white`}
+                    >
+                        Rejected
+                    </div>
+                </div>
                 <div className="w-full bg-white shadow-lg rounded-lg p-6 overflow-x-auto">
                     <table className="w-full border-collapse border border-[#021b41]">
                         <thead>

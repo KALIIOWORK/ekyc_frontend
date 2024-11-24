@@ -7,11 +7,12 @@ import rewriteAll from 'vite-plugin-rewrite-all';
 export default defineConfig({
   base: '/',
   plugins: [react(), rewriteAll()],
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "../../../index.css";`, // Optional: Import global SCSS variables or mixins
-      },
-    },
+  server: {
+    // Vite-specific setting to ensure React SPA routing works in development
+    middlewareMode: true,
+  },
+  build: {
+    // Output settings for production build
+    outDir: 'dist',
   },
 })

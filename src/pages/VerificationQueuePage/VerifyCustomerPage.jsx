@@ -73,8 +73,12 @@ export const VerifyCustomerPage = () => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    };
 
-    const specificFields = ["fullName", "DOB", "mobileNumber", "email", "aadharNumber", "pancardNumber"];
+    const specificFields = ["fullName", "DOB", "mobileNumber", "email", "aadharNumber", "pancardNumber", "agentName", "ekycTime"];
     const imageFields = [
         { label: 'Aadhar Front Image', key: 'aadharFrontImage' },
         { label: 'Aadhar Back Image', key: 'aadharBackImage' },
@@ -99,7 +103,13 @@ export const VerifyCustomerPage = () => {
                             <span className="font-semibold capitalize">
                                 {key.replace(/([A-Z])/g, " $1").toUpperCase()}
                             </span>
-                            <span>{key === "DOB" ? formatDate(customerDetails[key]) : customerDetails[key] || "N/A"}</span>
+                            <span>
+                                {key === "DOB"
+                                    ? formatDate(customerDetails[key])
+                                    : key === "ekycTime"
+                                        ? formatDateTime(customerDetails[key])
+                                        : customerDetails[key] || "N/A"}
+                            </span>
                         </div>
                     ))}
                 </div>
@@ -214,6 +224,8 @@ export const VerifyCustomerPage = () => {
                                     {customerDetails.verificationStatus}
                                 </p>
                             </div>
+                            <div className='text-lg font-bold text-center mb-2'>Verifier Comments</div>
+                            <div className='text-center'>{customerDetails.verificationComments}</div>
                         </div>
                     )
                 )

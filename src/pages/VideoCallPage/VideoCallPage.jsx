@@ -2,11 +2,20 @@ import { useState, useEffect } from 'react';
 import Basics from '../../components/VideoCall/Basics';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { useToggleIsJoined } from '../../utils/api-services/eKYC';
 
 export const VideoCallPage = () => {
     const [joined, setJoined] = useState(true);
     const [selectedOption, setSelectedOption] = useState('');
     const navigate = useNavigate();
+    const { customerId } = useParams();
+    console.log("eKYC ID:", customerId);
+
+    const { mutate } = useToggleIsJoined({
+        onSuccess: (res) => {
+            console.log(res);
+        }
+    });
 
     // Retrieve selectedOption from localStorage
     useEffect(() => {
@@ -14,20 +23,22 @@ export const VideoCallPage = () => {
         setSelectedOption(role);
     }, []);
 
-    // Handle Mute button click (if required)
-    const handleMuteClick = () => {
-        // Add mute functionality here
-    };
+    useEffect(() => {
+        const handleUnload = () => {
+            // Call API to toggle isJoined to false
+            mutate({ isJoined: false, eKYCId: customerId });
+        };
 
-    // Handle end call (if required)
-    const handleEndCall = () => {
-        // End call logic here
-        navigate('/home'); // Navigate to homepage or another page after call ends
-    };
+        // Add event listener for browser/tab close or refresh
+        window.addEventListener('beforeunload', handleUnload);
 
-    //pass the _id to the basics component
-    const { customerId } = useParams();
-    console.log("eKYC ID:", customerId);
+        // Cleanup: Remove event listener when component unmounts
+        return () => {
+            handleUnload(); // Ensure API call happens on component unmount
+            window.removeEventListener('beforeunload', handleUnload);
+        };
+    }, [mutate, customerId]);
+
 
 
     return (

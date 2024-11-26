@@ -49,7 +49,8 @@ export const VerificationQueuePage = () => {
     const { isLoadingCustomers, isError, data } = useGetListOfeKYC(filters, {
         onSuccess: (res) => {
             if (res.data.status) {
-                setCustomers(res.data.eKYCs);
+                let sortedCustomers = res.data.eKYCs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setCustomers(sortedCustomers);
                 setNoCustomersMessage('');
             }
             else {
@@ -112,7 +113,8 @@ export const VerificationQueuePage = () => {
                         <thead>
                             <tr>
                                 <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Customer</th>
-                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Email</th>
+                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Agent Name</th>
+                                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">ekycTime</th>
                                 <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Mobile Number</th>
                                 <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Verification Status</th>
                                 <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Documents</th>
@@ -138,7 +140,11 @@ export const VerificationQueuePage = () => {
                                                 <span className="ml-2 ">{customer.fullName}</span>
                                             </div>
                                         </td>
-                                        <td className="border border-primary-color px-4 py-2 text-gray-800">{customer.email}</td>
+                                        <td className="border border-primary-color px-4 py-2 text-gray-800">
+                                            {customer.agentName}
+                                        </td>
+                                        <td className="border border-primary-color px-4 py-2 text-gray-800">{new Date(customer.createdAt).toLocaleDateString()} {new Date(customer.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+
                                         <td className="border border-primary-color px-4 py-2 text-gray-800">
                                             +91(IN) {customer.mobileNumber}
                                         </td>

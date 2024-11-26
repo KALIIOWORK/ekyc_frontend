@@ -1,20 +1,35 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
+import { useToggleIsJoined } from '../../utils/api-services/eKYC';
 
 export const ConsentPage = () => {
     const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate();
     const eKYCId = localStorage.getItem('eKYCId');
+    const [isJoined, setIsJoined] = useState(true);
+    const [data, setData] = useState({
+        isJoined: true,
+        eKYCId: eKYCId
+    });
 
     // Handle checkbox change
     const handleCheckboxChange = (event) => {
         setIsChecked(event.target.checked);
     };
 
+    const { mutate } = useToggleIsJoined({
+        onSuccess: (res) => {
+            console.log(res);
+        }
+    });
+
     // Handle consent submission
     const handleSubmit = () => {
+        console.log("Consent submitted");
+        console.log("data", data)
         // Proceed to the next page (replace with your actual route)
+        mutate(data);
         navigate(`/videoCallPage/${eKYCId}`);
     };
 

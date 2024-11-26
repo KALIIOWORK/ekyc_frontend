@@ -69,7 +69,8 @@ export const AgentBasics = ({ eKYCId }) => {
                     ekycId: eKYCId,
                     startRecordinguid: startRecordinguid,
                     startRecordingtoken: startRecordingtoken,
-                    customeruid: customeruid
+                    customeruid: customeruid,
+                    agentUsername: localStorage.getItem('username')
                 },
                     {
                         headers: {

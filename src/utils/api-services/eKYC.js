@@ -43,3 +43,23 @@ export const useGeteKYCById = (
     });
 }
 
+export const useToggleIsJoined = (
+    params
+) => {
+    const axios = useAxios();
+    return useMutation({
+        queryKey: ["toggleIsJoined"],
+        mutationFn: (data) => axios.post(`/ekyc/toggleIsJoined`, data),
+        onError: (err) => {
+            //console.error(err);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: err,
+            });
+        },
+        ...params
+
+    });
+}
+

@@ -16,6 +16,9 @@ export const CustomerQueuePage = () => {
   const [agent, setAgent] = useState('');
   const username = localStorage.getItem('username');
   const [isCalling, setIsCalling] = useState(false);
+  const [isMissed, setIsMissed] = useState(true);
+  const [selectedFilter, setSelectedFilter] = useState('queue');
+
 
   // Fetch agent data by username
   const { isLoading: isLoadingAgent } = useGetUserByUsername(username, {
@@ -23,6 +26,16 @@ export const CustomerQueuePage = () => {
       setAgent(res.data.user);
     },
   });
+
+  const handleFilterChange = (filterKey) => {
+    if (filterKey === 'queue') {
+      setFilters({ isJoined: true });
+    } else if (filterKey === 'missed') {
+      setFilters({ isMissed: true });
+    }
+    setSelectedFilter(filterKey);
+  };
+
 
   // Fetch eKYC customers
   const {
@@ -76,13 +89,36 @@ export const CustomerQueuePage = () => {
       <Header agent={agent} />
 
       {/* Customer Queue */}
-      <div className="flex-grow flex justify-center py-8 shadow-sm shadow-gray-950">
+      <div className="flex-grow flex flex-col items-center py-8 px-10 shadow-sm shadow-gray-950">
+        {/* Filter Section */}
+        <div className="w-full bg-white shadow-lg rounded-lg p-1 flex justify-between mb-4">
+          <div
+            onClick={() => handleFilterChange('queue')}
+            className={`cursor-pointer w-full text-center  transition-all duration-300 ease-in-out
+      ${selectedFilter === 'queue'
+                ? 'bg-yellow-500  shadow-md text-white'
+                : 'bg-gray-300 text-black '}`}
+          >
+            Customer Queue
+          </div>
+          <div
+            onClick={() => handleFilterChange('missed')}
+            className={`cursor-pointer w-full text-center transition-all duration-300 ease-in-out
+      ${selectedFilter === 'missed'
+                ? 'bg-red-600 shadow-md text-white '
+                : 'bg-gray-300 text-black'}`}
+          >
+            Missed eKYCs
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
           {noCustomersMessage ? (
             <div className="text-white text-center text-2xl font-semibold">
               {noCustomersMessage}
             </div>
           ) : (
+
             customers.map((customer, index) => (
               <div className="max-h-[300px] overflow-hidden" key={index}>
                 <div className="bg-white rounded-lg shadow p-4 text-center border-2 border-[#021b41]">
@@ -102,12 +138,25 @@ export const CustomerQueuePage = () => {
                       minute: '2-digit',
                     })}
                   </p>
-                  <button
-                    onClick={() => handleJoinCallClick(customer)}
-                    className="mt-4 px-2 py-2 bg-text-color text-white rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5 w-full"
-                  >
-                    Start eKYC Meeting
-                  </button>
+                  {/* Conditionally render missedTime for isMissed filter */}
+                  {selectedFilter === 'missed' && customer.missedTime && (
+                    <p className="text-sm text-red-500 font-semibold mt-2">
+                      Missed Time: {new Date(customer.missedTime).toLocaleDateString()}{' '}
+                      {new Date(customer.missedTime).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  )}
+                  {/* Conditionally render verificationStatus for isMissed filter */}
+                  {selectedFilter === 'queue' && (
+                    <button
+                      onClick={() => handleJoinCallClick(customer)}
+                      className="mt-4 px-2 py-2 bg-text-color text-white rounded-full transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5 w-full"
+                    >
+                      Start eKYC Meeting
+                    </button>
+                  )}
                 </div>
               </div>
             ))

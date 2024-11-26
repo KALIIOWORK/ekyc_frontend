@@ -26,7 +26,7 @@ export const VideoCallPage = () => {
     useEffect(() => {
         const handleUnload = () => {
             // Call API to toggle isJoined to false
-            mutate({ isJoined: false, eKYCId: customerId });
+            mutate({ isJoined: false, eKYCId: customerId, isMissed: true });
         };
 
         // Add event listener for browser/tab close or refresh

@@ -157,7 +157,7 @@ export const VerifyCustomerPage = () => {
                         <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg aspect-[16/9] border rounded-lg overflow-hidden">
                             <video
                                 controls
-                                className="absolute top-0 left-0 w-full h-full object-cover"
+                                className="absolute top-0 left-0 w-full h-full object-contain"
                             >
                                 <source src={customerDetails.ekycRecording} type="video/mp4" />
                             </video>

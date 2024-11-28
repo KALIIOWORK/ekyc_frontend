@@ -46,6 +46,7 @@ export const AgentBasics = ({ eKYCId }) => {
         autoGainControl: true,
     });
 
+
     const { localCameraTrack, error: cameraError } = useLocalCameraTrack(cameraOn);
     usePublish([localMicrophoneTrack, localCameraTrack]);
 

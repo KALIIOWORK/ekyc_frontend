@@ -4,6 +4,7 @@ import Header from "./Header";
 
 export const CustomerPage = () => {
     const navigate = useNavigate();
+    const [add, setAdd] = useState('')
 
     const [formData, setFormData] = useState({
         title: "",
@@ -21,6 +22,46 @@ export const CustomerPage = () => {
         const updatedData = { ...formData, [name]: value };
         setFormData(updatedData);
     };
+
+    useEffect(() => {
+        const geoWatchId = navigator.geolocation.watchPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                console.log('Latitude:', latitude, 'Longitude:', longitude);
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+                fetch(url)
+                    .then((res) => res.json())
+                    .then((data) => {
+                        console.log('Geocoding response:', data);
+                        if (data && data.address) {
+                            setAdd(data.address);
+                        } else {
+                            console.error('No address found in response:', data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching address:', error);
+                    });
+            },
+            (error) => {
+                console.error('Error getting geolocation:', error);
+            },
+            {
+                enableHighAccuracy: true,  // High accuracy
+                timeout: 60000,            // Timeout in 15 seconds
+                maximumAge: 0,
+                distanceFilter: 1           // Use fresh data
+            }
+        );
+
+        // Cleanup on unmount to stop watching position
+        return () => {
+            navigator.geolocation.clearWatch(geoWatchId);
+        };
+    }, []);
+
+
+    console.log(add)
 
     useEffect(() => {
         const savedData = localStorage.getItem("CustomerDetails");

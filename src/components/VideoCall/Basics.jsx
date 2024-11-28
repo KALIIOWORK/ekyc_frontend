@@ -39,7 +39,15 @@ export const Basics = ({ eKYCId }) => {
         autoGainControl: true,
     });
 
-    const { localCameraTrack, error: cameraError } = useLocalCameraTrack(cameraOn);
+    const { localCameraTrack, error: cameraError } = useLocalCameraTrack(cameraOn, {
+        encoderConfig: {
+            width: 1280,
+            height: 720,
+            frameRate: 30,
+        },
+    });
+
+    //const { localCameraTrack, error: cameraError } = useLocalCameraTrack(cameraOn);
     usePublish([localMicrophoneTrack, localCameraTrack]);
 
     const remoteUsers = useRemoteUsers();

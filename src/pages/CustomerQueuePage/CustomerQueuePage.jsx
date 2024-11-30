@@ -79,6 +79,8 @@ export const CustomerQueuePage = () => {
     navigate(`/agentVideoCallPage/${customer._id}`);
   };
 
+
+
   if (isLoadingAgent || isLoadingCustomers) {
     return <Loader />;
   }
@@ -112,7 +114,7 @@ export const CustomerQueuePage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
           {noCustomersMessage ? (
             <div className="text-white text-center text-2xl font-semibold">
               {noCustomersMessage}
@@ -138,7 +140,6 @@ export const CustomerQueuePage = () => {
                       minute: '2-digit',
                     })}
                   </p>
-                  {/* Conditionally render missedTime for isMissed filter */}
                   {selectedFilter === 'missed' && customer.missedTime && (
                     <p className="text-sm text-red-500 font-semibold mt-2">
                       Missed Time: {new Date(customer.missedTime).toLocaleDateString()}{' '}
@@ -148,7 +149,6 @@ export const CustomerQueuePage = () => {
                       })}
                     </p>
                   )}
-                  {/* Conditionally render verificationStatus for isMissed filter */}
                   {selectedFilter === 'queue' && (
                     <button
                       onClick={() => handleJoinCallClick(customer)}
@@ -161,6 +161,68 @@ export const CustomerQueuePage = () => {
               </div>
             ))
           )}
+        </div> */}
+        {/* Table Section */}
+        <div className="w-full bg-white shadow-lg rounded-lg p-6 overflow-x-auto">
+          <table className="w-full border-collapse border border-[#021b41]">
+            <thead>
+              <tr>
+                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Customer</th>
+                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Mobile Number</th>
+                <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Profile Created On</th>
+                {selectedFilter === 'missed' ? (
+                  <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Missed Time</th>
+                ) : (
+                  <th className="border-2 border-primary-color px-4 py-2 text-left text-gray-600 font-medium">Actions</th>
+                )}
+
+              </tr>
+            </thead>
+            <tbody>
+              {noCustomersMessage ? (
+                <tr>
+                  <td colSpan="5" className="border border-primary-color px-4 py-2 text-gray-800 text-center">
+                    {noCustomersMessage}
+                  </td>
+                </tr>
+              ) : (
+                customers.map((customer) => (
+                  <tr key={customer._id} className="hover:bg-gray-100">
+                    <td className="border border-primary-color px-4 py-2 text-gray-800 text-sm">
+                      <div className="flex items-center">
+                        <img
+                          src={customer.customerPhoto}
+                          alt="Profile"
+                          className="w-6 h-6 rounded-full"
+                        />
+                        <span className="ml-2 ">{customer.fullName}</span>
+                      </div>
+                    </td>
+                    <td className="border border-primary-color px-4 py-2 text-gray-800">
+                      +91(IN) {customer.mobileNumber}
+                    </td>
+                    <td className="border border-primary-color px-4 py-2 text-gray-800">{new Date(customer.createdAt).toLocaleDateString()} {new Date(customer.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                    {selectedFilter === 'missed' && (
+                      <td className="border border-primary-color px-4 py-2 text-red-600">
+                        {new Date(customer.missedTime).toLocaleDateString()} {new Date(customer.missedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                    )}
+                    {selectedFilter === 'queue' && (
+                      <td className="border border-primary-color px-4 py-2">
+                        <button
+                          onClick={() => handleJoinCallClick(customer)}
+                          className="bg-text-color text-white px-2 py-1 rounded transition duration-200 ease-in-out transform hover:bg-hover-color hover:-translate-y-0.5"
+                        >
+                          Start eKYC Meeting
+                        </button>
+                      </td>
+                    )}
+
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
